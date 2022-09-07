@@ -9,7 +9,6 @@ from rest_framework.generics import ListAPIView
 from django.http.response import HttpResponse
 from .serializers import TableSerializer
 from myapp.models import NewTable
-from .viewset import PostViewSet
 from rest_framework.viewsets import ModelViewSet
 from .models import NewTable
 from .serializers import TableSerializer
@@ -27,12 +26,19 @@ def showData(request):
     return JsonResponse(data, safe=False)
 
 
+# ListAPIView를 이용한 pagination/filter
+
 class PostViewSet(ListAPIView):
-    queryset = NewTable.objects.all()
+    #queryset = NewTable.objects.all()
     serializer_class = TableSerializer
     pagination_class = PostPageNumberPagination
 
+    def get_queryset(self):
+        customer = self.kwargs['name']
+        return NewTable.objects.filter(name=customer)
 
+
+# api_view를 이용한 get, post method 정의
 @api_view(['GET', 'POST'])
 def get_api(request, id):
     if request.method == 'GET':
