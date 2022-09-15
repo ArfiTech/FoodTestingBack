@@ -7,9 +7,23 @@ from .models import NewTable
 
 
 class TableSerializer(serializers.ModelSerializer):
-    uuid = serializers.IntegerField()
 
     class Meta:
         model = NewTable
-        fields = ('uuid', 'email', 'name', 'age')
+        fields = '__all__'
         # uuid, email, name, age 값만 return 시키도록함.
+
+# foodTesting Serializer
+
+
+'''
+class CustomerInfoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model=NewTable
+        fields=('email','name','nickname','gender','profile','born_date','type')
+        
+class StoreInfoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model=NewTable
+        fields=('사업자등록번호(수정필요)','restaurant_name','restaurant_photo','menu_list','menu_photo_list')
+'''

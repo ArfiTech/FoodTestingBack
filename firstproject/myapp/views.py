@@ -14,6 +14,9 @@ from .models import NewTable
 from .serializers import TableSerializer
 from rest_framework.pagination import PageNumberPagination
 from .pagination import PostPageNumberPagination
+from django.views.decorators.csrf import csrf_exempt
+from rest_framework.parsers import JSONParser
+
 # Create your views here.
 
 
@@ -42,10 +45,13 @@ class PostViewSet(ListAPIView):
 @api_view(['GET', 'POST'])
 def get_api(request, id):
     if request.method == 'GET':
-        data = list(NewTable.objects.filter(uuid=id).values())
+        if (NewTable.objects.filter(uuid=id)):
+            data = list(NewTable.objects.filter(uuid=id))
+            serializer = TableSerializer(data, many=True)
+            return JsonResponse(serializer.data, safe=False, status=200)
         #data = NewTable.objects.all()
         #serialized_data = TableSerializer(data, many=True)
-        return JsonResponse(data, safe=False)
+        return HttpResponse("Not exists", status=404)
 
     elif request.method == 'POST':
         return HttpResponse('post')
@@ -54,10 +60,60 @@ def get_api(request, id):
 @api_view(['POST'])
 def post_api(request):
     if request.method == 'POST':
-        print('post method')
-        print(request.data)
-        serializer = TableSerializer(data=request.data, many=True)
+        requestedData = JSONParser().parse(request)
+        serializer = TableSerializer(data=requestedData)
         if (serializer.is_valid()):
             serializer.save()
-            return Response(serializer.data, status=200)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(None, status=status.HTTP_400_BAD_REQUEST)
+
+
+@csrf_exempt
+def postData(request):
+    if request.method == 'POST':
+        requestedData = JSONParser().parse(request)
+        serializer = TableSerializer(data=requestedData)
+        # 중복검사
+        if (NewTable.objects.filter(uuid=requestedData['uuid']).exists()):
+            return HttpResponse('uuid already exists', status=404)
+
+        elif serializer.is_valid():
+            serializer.save()
+            return JsonResponse("Added Successfully", safe=False)
+        return JsonResponse("Failed to Add", safe=False)
+
+# foodTesting API
+
+
+def get_userinfo(request, uuid):
+    if (NewTable.objects.filter(uuid=uuid).exists()):
+        data = list(NewTable.objects.filter(uuid=uuid).values())
+        # attribute -> serializer or all values()
+        return JsonResponse(data, safe=False, status=200)
+    return HttpResponse("Not exists", safe=False, status=404)
+
+
+def register_userinfo(request):
+    requestedData = JSONParser().parse(request)
+    serializer = TableSerializer(data=requestedData)
+    if (NewTable.objects.filter(uuid=requestedData['email']).exists()):
+        return HttpResponse('email is already exists', status.HTTP_400_BAD_REQUEST)
+    elif (serializer.is_valid()):
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+    return JsonResponse("Failed to Add", safe=False, status=status.HTTP_404_NOT_FOUND)
+
+
+def post_review(request):
+    requestedData = JSONParser().parse(request)
+    serializer = TableSerializer(data=requestedData)
+    if (NewTable.objects.filter(uuid=requestedData['uuid']).exists()):
+        return HttpResponse('store registeration number is already exists', status.HTTP_400_BAD_REQUEST)
+    elif (serializer.is_valid()):
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+    return JsonResponse("Failed to add", safe=False, status=status.HTTP_404_NOT_FOUND)
+
+
+def get_storeinfo(request, uuid):
+    return HttpResponse()
