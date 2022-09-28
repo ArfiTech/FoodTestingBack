@@ -82,6 +82,31 @@ def postData(request):
             return JsonResponse("Added Successfully", safe=False)
         return JsonResponse("Failed to Add", safe=False)
 
+
+@csrf_exempt
+def put_api(request):
+    if request.method == 'PUT':
+        table_data = JSONParser().parse(request)
+        table = NewTable.objects.get(uuid=table_data['uuid'])
+        serializer = TableSerializer(table, data=table_data)
+        if (serializer.is_valid()):
+            serializer.save()
+            return JsonResponse("Update Successfully", safe=False)
+        return JsonResponse("Failed to Update", safe=False)
+
+
+@api_view(['DELETE'])
+def delete_api(request, id):
+    if request.method == 'DELETE':
+        if (NewTable.objects.filter(uuid=id).exists()):
+            table = NewTable.objects.get(uuid=id)
+            table.delete()
+            return JsonResponse("Delete Successfully", safe=False)
+        else:
+            return JsonResponse("Not exist", safe=False)
+    return JsonResponse("Failed to Delete", safe=False)
+
+
 # foodTesting API
 
 
@@ -91,6 +116,16 @@ def get_userinfo(request, uuid):
         # attribute -> serializer or all values()
         return JsonResponse(data, safe=False, status=200)
     return HttpResponse("Not exists", safe=False, status=404)
+
+
+def modify_userinfo(request):
+    table_data = JSONParser().parse(request)
+    table = NewTable.objects.get(uuid=table_data['uuid'])
+    serializer = TableSerializer(table, data=table_data)
+    if (serializer.is_valid()):
+        serializer.save()
+        return JsonResponse("Update Successfully", safe=False)
+    return JsonResponse("Failed to Update", safe=False)
 
 
 def register_userinfo(request):
@@ -115,5 +150,10 @@ def post_review(request):
     return JsonResponse("Failed to add", safe=False, status=status.HTTP_404_NOT_FOUND)
 
 
-def get_storeinfo(request, uuid):
-    return HttpResponse()
+def get_storeinfo(request, regnum):
+    if (NewTable.objects.filter(uuid=regnum).exists()):
+        data = list(NewTable.objects.filter(uuid=regnum).values())
+        # attribute -> serializer or all values()
+        # merge food (use | operator)
+        return JsonResponse(data, safe=False, status=200)
+    return HttpResponse("Not exists", safe=False, status=404)
