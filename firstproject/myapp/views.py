@@ -7,13 +7,13 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework.generics import ListAPIView
 from django.http.response import HttpResponse
-from .serializers import TableSerializer
+from .serializers import CustomerSerializer, MarketSerializer, ReviewSerializer, TableSerializer
 from myapp.models import NewTable
 from rest_framework.viewsets import ModelViewSet
 from .models import NewTable
 from .serializers import TableSerializer
 from rest_framework.pagination import PageNumberPagination
-from .pagination import PostPageNumberPagination
+from .pagination import MarketPagination, PostPageNumberPagination
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework.parsers import JSONParser
 
@@ -111,8 +111,8 @@ def delete_api(request, id):
 
 
 def get_userinfo(request, uuid):
-    if (NewTable.objects.filter(uuid=uuid).exists()):
-        data = list(NewTable.objects.filter(uuid=uuid).values())
+    if (Customer.objects.filter(uuid=uuid).exists()):
+        data = list(Customer.objects.filter(uuid=uuid).values())
         # attribute -> serializer or all values()
         return JsonResponse(data, safe=False, status=200)
     return HttpResponse("Not exists", safe=False, status=404)
@@ -120,8 +120,8 @@ def get_userinfo(request, uuid):
 
 def modify_userinfo(request):
     table_data = JSONParser().parse(request)
-    table = NewTable.objects.get(uuid=table_data['uuid'])
-    serializer = TableSerializer(table, data=table_data)
+    table = Customer.objects.get(uuid=table_data['uuid'])
+    serializer = CustomerSerializer(table, data=table_data)
     if (serializer.is_valid()):
         serializer.save()
         return JsonResponse("Update Successfully", safe=False)
@@ -130,8 +130,8 @@ def modify_userinfo(request):
 
 def register_userinfo(request):
     requestedData = JSONParser().parse(request)
-    serializer = TableSerializer(data=requestedData)
-    if (NewTable.objects.filter(uuid=requestedData['email']).exists()):
+    serializer = CustomerSerializer(data=requestedData)
+    if (Customer.objects.filter(email=requestedData['email']).exists()):
         return HttpResponse('email is already exists', status.HTTP_400_BAD_REQUEST)
     elif (serializer.is_valid()):
         serializer.save()
@@ -141,19 +141,37 @@ def register_userinfo(request):
 
 def post_review(request):
     requestedData = JSONParser().parse(request)
-    serializer = TableSerializer(data=requestedData)
-    if (NewTable.objects.filter(uuid=requestedData['uuid']).exists()):
-        return HttpResponse('store registeration number is already exists', status.HTTP_400_BAD_REQUEST)
-    elif (serializer.is_valid()):
+    serializer = ReviewSerializer(data=requestedData)
+    if (serializer.is_valid()):
         serializer.save()
         return Response(serializer.data, status=status.HTTP_201_CREATED)
     return JsonResponse("Failed to add", safe=False, status=status.HTTP_404_NOT_FOUND)
 
 
-def get_storeinfo(request, regnum):
-    if (NewTable.objects.filter(uuid=regnum).exists()):
-        data = list(NewTable.objects.filter(uuid=regnum).values())
-        # attribute -> serializer or all values()
-        # merge food (use | operator)
-        return JsonResponse(data, safe=False, status=200)
-    return HttpResponse("Not exists", safe=False, status=404)
+class getStoreInfobyRegNum(ListAPIView):
+    #queryset = Market.objects.all()
+    serializer_class = MarketSerializer
+    pagination_class = MarketPagination
+
+    def get_queryset(self):
+        regnum = self.kwargs['regnum']
+        return Market.objects.filter(reg_num=regnum)
+
+
+class getStoreInfobyUUID(ListAPIView):
+    #queryset = Market.objects.all()
+    serializer_class = MarketSerializer
+    pagination_class = MarketPagination
+
+    def get_queryset(self):
+        id = self.kwargs['uuid']
+        return Market.objects.filter(customer_uuid=id)
+
+
+def modify_storeInfo(request):
+    requestedData = JSONParser().parse(request)
+    serializer = MarketSerializer(data=requestedData)
+    if (serializer.is_valid()):
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+    return JsonResponse("Failed to add", safe=False, status=status.HTTP_404_NOT_FOUND)

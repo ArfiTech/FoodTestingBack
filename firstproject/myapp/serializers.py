@@ -16,6 +16,27 @@ class TableSerializer(serializers.ModelSerializer):
 # foodTesting Serializer
 
 
+class CustomerSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Customer
+        fields = '__all__'
+
+
+class ReviewSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Review
+        fields = '__all__'
+
+
+class MarketSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Market
+        fields = '__all__'
+
+
 '''
 class CustomerInfoSerializer(serializers.ModelSerializer):
     class Meta:

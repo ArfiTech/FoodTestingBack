@@ -5,3 +5,10 @@ from rest_framework.pagination import PageNumberPagination
 
 class PostPageNumberPagination(PageNumberPagination):
     page_size = 5
+
+
+# foodTesting Paging
+
+
+class MarketPagination(PageNumberPagination):
+    page_size = 10

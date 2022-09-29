@@ -18,6 +18,10 @@ urlpatterns = [
     path('get/userinfo/<str:uuid>', views.get_userinfo),
     path('modify/userinfo', views.modify_userinfo),
     path('post/review', views.post_review),
-    path('storeinfo/by-registartion-num/<str:regnum>', views.get_storeinfo),
+    path('storeinfo/by-registartion-num/<str:regnum>',
+         views.getStoreInfobyRegNum.as_view()),
+    path('storeinfo/by-customer-id/<str:uuid>',
+         views.getStoreInfobyUUID.as_view()),
+    path('modify/storeinfo', views.modify_storeInfo),
     #path('storeinfo/by-registartion-num/<str:regnum>', views.get_storeinfo)
 ]
