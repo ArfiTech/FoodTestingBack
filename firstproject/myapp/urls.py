@@ -1,4 +1,4 @@
-from django.urls import path
+from django.urls import path, re_path
 from myapp import views
 urlpatterns = [
     path('', views.showData),
@@ -19,9 +19,14 @@ urlpatterns = [
     path('modify/userinfo', views.modify_userinfo),
     path('post/review', views.post_review),
     path('storeinfo/by-registartion-num/<str:regnum>',
-         views.getStoreInfobyRegNum.as_view()),
+         views.getMarketInfoWithPost),
     path('storeinfo/by-customer-id/<str:uuid>',
-         views.getStoreInfobyUUID.as_view()),
-    path('modify/storeinfo', views.modify_storeInfo),
-    #path('storeinfo/by-registartion-num/<str:regnum>', views.get_storeinfo)
+         views.getMarketInfobyUUID.as_view()),
+    path('storeinfo/<str:category>', views.getMarketInfobyCategory.as_view()),
+    path('modify/storeinfo', views.modify_marketInfo),
+    path('post/new-menu', views.post_menu),
+    path('delete/menu/<str:regnum>&<str:uuid>', views.delete_menu),
+    re_path(r'^marketinfo/orderby/distance/(?P<category>\w+)/(?P<lat>\d+\.\d+)&(?P<lng>\d+\.\d+)$',
+            views.get_marketInfo_orderBy_distance),
+    #path('storeinfo/by-registartion-num/<str:regnum>', views.get_storeinfo),
 ]
