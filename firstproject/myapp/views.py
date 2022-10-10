@@ -125,8 +125,8 @@ def modify_userinfo(request):
     serializer = CustomerSerializer(table, data=table_data)
     if (serializer.is_valid()):
         serializer.save()
-        return JsonResponse("Update Successfully", safe=False)
-    return JsonResponse("Failed to Update", safe=False)
+        return Response(serializer.data, safe=False, status=status.HTTP_200_OK)
+    return JsonResponse("Failed to Update", safe=False, status=status.HTTP_400_BAD_REQUEST)
 
 
 def register_userinfo(request):
