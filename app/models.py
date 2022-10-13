@@ -20,7 +20,7 @@ class Customer(models.Model):
 class Market(models.Model):
     reg_num = models.CharField(primary_key=True, max_length=12)
     name = models.CharField(max_length=20)
-    market_photo = models.CharField(max_length=255)
+    market_photo = models.ImageField(upload_to="img")
     start_date = models.BigIntegerField()
     period = models.BigIntegerField()
     customer_uuid = models.ForeignKey(Customer, models.DO_NOTHING, db_column='customer_uuid')
@@ -72,6 +72,7 @@ class Questionlist(models.Model):
     market_reg_num = models.ForeignKey(Market, models.DO_NOTHING, db_column='market_reg_num')
     contents = models.CharField(max_length=200)
     fast_response = models.CharField(max_length=200, blank=True, null=True)
+    order = models.IntegerField(blank=True, null=True)
 
     class Meta:
         managed = False
