@@ -1,0 +1,43 @@
+base_dir:  /home/ubuntu/FoodTestingBack
+base_dir:  /home/ubuntu/FoodTestingBack
+Watching for file changes with StatReloader
+Performing system checks...
+
+System check identified no issues (0 silenced).
+October 19, 2022 - 01:41:09
+Django version 4.1.2, using settings 'foodTestingProject.settings'
+Starting development server at http://ec2-13-124-42-211.ap-northeast-2.compute.amazonaws.com:8000/
+Quit the server with CONTROL-C.
+base_dir:  /home/ubuntu/FoodTestingBack
+base_dir:  /home/ubuntu/FoodTestingBack
+Watching for file changes with StatReloader
+Performing system checks...
+
+System check identified no issues (0 silenced).
+October 19, 2022 - 01:42:08
+Django version 4.1.2, using settings 'foodTestingProject.settings'
+Starting development server at http://ec2-13-124-42-211.ap-northeast-2.compute.amazonaws.com:8000/
+Quit the server with CONTROL-C.
+Error: That port is already in use.
+base_dir:  /home/ubuntu/FoodTestingBack
+base_dir:  /home/ubuntu/FoodTestingBack
+Watching for file changes with StatReloader
+Performing system checks...
+
+System check identified no issues (0 silenced).
+October 19, 2022 - 01:43:03
+Django version 4.1.2, using settings 'foodTestingProject.settings'
+Starting development server at http://ec2-13-124-42-211.ap-northeast-2.compute.amazonaws.com:8000/
+Quit the server with CONTROL-C.
+Error: That port is already in use.
+base_dir:  /home/ubuntu/FoodTestingBack
+base_dir:  /home/ubuntu/FoodTestingBack
+Watching for file changes with StatReloader
+Performing system checks...
+
+System check identified no issues (0 silenced).
+October 19, 2022 - 01:43:21
+Django version 4.1.2, using settings 'foodTestingProject.settings'
+Starting development server at http://ec2-13-124-42-211.ap-northeast-2.compute.amazonaws.com:8000/
+Quit the server with CONTROL-C.
+Error: That port is already in use.

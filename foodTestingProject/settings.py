@@ -14,6 +14,8 @@ from pathlib import Path
 import os, json
 from django.core.exceptions import ImproperlyConfigured
 
+pymysql.install_as_MySQLdb()
+
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 print("base_dir: ", BASE_DIR)
@@ -106,11 +108,14 @@ WSGI_APPLICATION = "foodTestingProject.wsgi.application"
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.mysql",
-        "NAME": "foodtesting",
-        "USER": "root",
+        "NAME": "foodTestingBack",
+        "USER": "admin",
         "PASSWORD": get_secret("PASSWORD"),
-        "HOST": "localhost",
+        "HOST": "database-1.c6lvmc0wjgps.ap-northeast-2.rds.amazonaws.com",
         "PORT": "3306",
+        "OPTIONS":{
+            'init_command' : "SET sql_mode='STRICT_TRANS_TABLES'"
+        }
     }
 }
 
