@@ -41,3 +41,162 @@ Django version 4.1.2, using settings 'foodTestingProject.settings'
 Starting development server at http://ec2-13-124-42-211.ap-northeast-2.compute.amazonaws.com:8000/
 Quit the server with CONTROL-C.
 Error: That port is already in use.
+base_dir:  /home/ubuntu/FoodTestingBack
+base_dir:  /home/ubuntu/FoodTestingBack
+Watching for file changes with StatReloader
+Performing system checks...
+
+System check identified no issues (0 silenced).
+October 19, 2022 - 01:49:22
+Django version 4.1.2, using settings 'foodTestingProject.settings'
+Starting development server at http://ec2-13-124-42-211.ap-northeast-2.compute.amazonaws.com:8000/
+Quit the server with CONTROL-C.
+Error: That port is already in use.
+base_dir:  /home/ubuntu/FoodTestingBack
+base_dir:  /home/ubuntu/FoodTestingBack
+Watching for file changes with StatReloader
+Performing system checks...
+
+System check identified no issues (0 silenced).
+October 19, 2022 - 01:51:01
+Django version 4.1.2, using settings 'foodTestingProject.settings'
+Starting development server at http://ec2-13-124-42-211.ap-northeast-2.compute.amazonaws.com:8000/
+Quit the server with CONTROL-C.
+Not Found: /
+[19/Oct/2022 01:51:13] "GET / HTTP/1.1" 404 3449
+Not Found: /
+[19/Oct/2022 01:51:23] "GET / HTTP/1.1" 404 3449
+[19/Oct/2022 01:51:28] "GET /admin/ HTTP/1.1" 200 6366
+[19/Oct/2022 01:51:28] "GET /admin/ HTTP/1.1" 200 6366
+[19/Oct/2022 01:54:05] "GET /admin/app/customer/ HTTP/1.1" 200 18226
+[19/Oct/2022 01:54:05] "GET /static/admin/css/changelists.css HTTP/1.1" 200 6395
+[19/Oct/2022 01:54:05] "GET /static/admin/js/admin/RelatedObjectLookups.js HTTP/1.1" 200 8985
+[19/Oct/2022 01:54:05] "GET /static/admin/js/jquery.init.js HTTP/1.1" 200 347
+[19/Oct/2022 01:54:05] "GET /static/admin/js/actions.js HTTP/1.1" 200 7872
+[19/Oct/2022 01:54:05] "GET /admin/jsi18n/ HTTP/1.1" 200 8911
+[19/Oct/2022 01:54:05] "GET /static/admin/js/vendor/jquery/jquery.js HTTP/1.1" 200 288580
+[19/Oct/2022 01:54:05] "GET /static/admin/js/core.js HTTP/1.1" 200 5698
+[19/Oct/2022 01:54:05] "GET /static/admin/js/urlify.js HTTP/1.1" 200 7902
+[19/Oct/2022 01:54:05] "GET /static/admin/js/prepopulate.js HTTP/1.1" 200 1531
+[19/Oct/2022 01:54:05] "GET /static/admin/js/vendor/xregexp/xregexp.js HTTP/1.1" 200 232381
+[19/Oct/2022 01:54:05] "GET /static/admin/js/filters.js HTTP/1.1" 200 966
+[19/Oct/2022 01:54:05] "GET /static/admin/img/tooltag-add.svg HTTP/1.1" 200 331
+[19/Oct/2022 01:54:07] "GET /admin/app/market/ HTTP/1.1" 200 20469
+[19/Oct/2022 01:54:07] "GET /admin/jsi18n/ HTTP/1.1" 200 8911
+[19/Oct/2022 01:54:08] "GET /admin/app/post/ HTTP/1.1" 200 17304
+[19/Oct/2022 01:54:08] "GET /admin/jsi18n/ HTTP/1.1" 200 8911
+[19/Oct/2022 02:29:52] "GET /admin/app/customer/ HTTP/1.1" 200 18226
+[19/Oct/2022 02:29:52] "GET /admin/jsi18n/ HTTP/1.1" 200 8911
+[19/Oct/2022 02:29:56] "GET /admin/app/market/ HTTP/1.1" 200 20469
+[19/Oct/2022 02:29:56] "GET /admin/jsi18n/ HTTP/1.1" 200 8911
+[19/Oct/2022 02:29:59] "GET /admin/ HTTP/1.1" 200 6366
+[19/Oct/2022 02:30:18] "GET /admin/app/market/ HTTP/1.1" 200 20469
+[19/Oct/2022 02:30:18] "GET /static/admin/js/admin/RelatedObjectLookups.js HTTP/1.1" 200 8985
+[19/Oct/2022 02:30:18] "GET /static/admin/js/core.js HTTP/1.1" 200 5698
+[19/Oct/2022 02:30:18] "GET /static/admin/js/jquery.init.js HTTP/1.1" 200 347
+[19/Oct/2022 02:30:18] "GET /static/admin/js/actions.js HTTP/1.1" 200 7872
+[19/Oct/2022 02:30:18] "GET /static/admin/js/vendor/jquery/jquery.js HTTP/1.1" 200 288580
+[19/Oct/2022 02:30:18] "GET /static/admin/js/urlify.js HTTP/1.1" 200 7902
+[19/Oct/2022 02:30:18] "GET /static/admin/js/prepopulate.js HTTP/1.1" 200 1531
+[19/Oct/2022 02:30:18] "GET /admin/jsi18n/ HTTP/1.1" 200 8911
+[19/Oct/2022 02:30:18] "GET /static/admin/js/vendor/xregexp/xregexp.js HTTP/1.1" 200 232381
+[19/Oct/2022 02:30:18] "GET /static/admin/js/filters.js HTTP/1.1" 200 966
+[19/Oct/2022 02:30:18] "GET /static/admin/img/tooltag-add.svg HTTP/1.1" 200 331
+[19/Oct/2022 05:18:50] code 400, message Bad request version ('À\x14À')
+[19/Oct/2022 05:18:50] You're accessing the development server over HTTPS, but it only supports HTTP.
+[19/Oct/2022 05:18:50] code 400, message Bad request version ('À\x14À')
+[19/Oct/2022 05:18:50] You're accessing the development server over HTTPS, but it only supports HTTP.
+[19/Oct/2022 05:18:51] code 400, message Bad request version ('À\x14À')
+[19/Oct/2022 05:18:51] You're accessing the development server over HTTPS, but it only supports HTTP.
+[19/Oct/2022 08:55:48] "GET /admin/login/?next=/admin/ HTTP/1.1" 200 2238
+Not Found: /favicon.ico
+[19/Oct/2022 08:55:48] "GET /favicon.ico HTTP/1.1" 404 3500
+[19/Oct/2022 08:56:02,641] - Broken pipe from ('115.23.186.161', 53253)
+Not Found: /
+[19/Oct/2022 09:16:08] "GET / HTTP/1.1" 404 3408
+Not Found: /
+[19/Oct/2022 11:03:04] "GET / HTTP/1.1" 404 3449
+Not Found: /favicon.ico
+[19/Oct/2022 11:03:04] "GET /favicon.ico HTTP/1.1" 404 3500
+[19/Oct/2022 11:03:28] "GET /admin/ HTTP/1.1" 302 0
+[19/Oct/2022 11:03:28] "GET /admin/login/?next=/admin/ HTTP/1.1" 200 2238
+[19/Oct/2022 11:03:44] "POST /admin/login/?next=/admin/ HTTP/1.1" 302 0
+[19/Oct/2022 11:03:44] "GET /admin/ HTTP/1.1" 200 6366
+[19/Oct/2022 11:03:46] "GET /admin/app/customer/ HTTP/1.1" 200 18226
+[19/Oct/2022 11:03:46] "GET /admin/jsi18n/ HTTP/1.1" 200 8911
+[19/Oct/2022 11:03:50] "GET /admin/app/customer/fb7ef791-6185-40a5-b97d-bf4e6d4b4d89/change/ HTTP/1.1" 200 10988
+[19/Oct/2022 11:03:50] "GET /static/admin/js/prepopulate_init.js HTTP/1.1" 200 586
+[19/Oct/2022 11:03:50] "GET /static/admin/css/forms.css HTTP/1.1" 200 8944
+[19/Oct/2022 11:03:50] "GET /static/admin/css/widgets.css HTTP/1.1" 200 11297
+[19/Oct/2022 11:03:50] "GET /admin/jsi18n/ HTTP/1.1" 200 8911
+[19/Oct/2022 11:03:50] "GET /static/admin/js/change_form.js HTTP/1.1" 200 606
+[19/Oct/2022 11:03:52] "GET /admin/app/customer/ HTTP/1.1" 200 18226
+Not Found: /get/userinfo/http://ec2-13-124-42-211.ap-northeast-2.compute.amazonaws.com:8000/
+[19/Oct/2022 11:04:18] "GET /get/userinfo/http://ec2-13-124-42-211.ap-northeast-2.compute.amazonaws.com:8000/ HTTP/1.1" 404 3707
+[19/Oct/2022 11:04:33] "GET /get/userinfo/fb7ef791-6185-40a5-b97d-bf4e6d4b4d89 HTTP/1.1" 200 204
+[19/Oct/2022 11:54:37] code 400, message Bad request version ('\x13\x01\x13\x02\x13\x03À+À,Ì©À/À0Ì¨À\x13À\x14\x00\x9c\x00\x9d\x00/\x005\x01\x00\x01\x95\x00\x00\x00;\x009\x00\x006ec2-13-124-42-211.ap-northeast-2.compute.amazonaws.com\x00\x17\x00\x00ÿ\x01\x00\x01\x00\x00')
+[19/Oct/2022 11:54:37] You're accessing the development server over HTTPS, but it only supports HTTP.
+[19/Oct/2022 11:56:34] code 400, message Bad request version ('\x13\x01\x13\x02\x13\x03À+À,Ì©À/À0Ì¨À\x13À\x14\x00\x9c\x00\x9d\x00/\x005\x01\x00\x01\x95\x00\x00\x00;\x009\x00\x006ec2-13-124-42-211.ap-northeast-2.compute.amazonaws.com\x00\x17\x00\x00ÿ\x01\x00\x01\x00\x00')
+[19/Oct/2022 11:56:34] You're accessing the development server over HTTPS, but it only supports HTTP.
+[19/Oct/2022 11:57:56] code 400, message Bad request version ('\x13\x01\x13\x02\x13\x03À+À,Ì©À/À0Ì¨À\x13À\x14\x00\x9c\x00\x9d\x00/\x005\x01\x00\x01\x95\x00\x00\x00;\x009\x00\x006ec2-13-124-42-211.ap-northeast-2.compute.amazonaws.com\x00\x17\x00\x00ÿ\x01\x00\x01\x00\x00')
+[19/Oct/2022 11:57:56] You're accessing the development server over HTTPS, but it only supports HTTP.
+Not Found: /get/userinfo/
+[19/Oct/2022 12:08:12] "GET /get/userinfo/?uuid=fb7ef791-6185-40a5-b97d-bf4e6d4b4d89 HTTP/1.1" 404 3548
+Not Found: /get/userinfo/
+[19/Oct/2022 12:08:15] "GET /get/userinfo/?uuid=fb7ef791-6185-40a5-b97d-bf4e6d4b4d89 HTTP/1.1" 404 3548
+Not Found: /get/userinfo/
+[19/Oct/2022 12:08:16] "GET /get/userinfo/?uuid=fb7ef791-6185-40a5-b97d-bf4e6d4b4d89 HTTP/1.1" 404 3548
+Not Found: /get/userinfo/
+[19/Oct/2022 12:08:40] "GET /get/userinfo/?uuid=fb7ef791-6185-40a5-b97d-bf4e6d4b4d89 HTTP/1.1" 404 3548
+Not Found: /get/userinfo/
+[19/Oct/2022 12:11:25] "GET /get/userinfo/?uuid=fb7ef791-6185-40a5-b97d-bf4e6d4b4d89 HTTP/1.1" 404 3548
+[19/Oct/2022 12:13:46] "GET /get/userinfo/fb7ef791-6185-40a5-b97d-bf4e6d4b4d89 HTTP/1.1" 200 204
+[19/Oct/2022 12:16:12] code 400, message Bad request version ('OÑËÜ®Ëd')
+[19/Oct/2022 12:16:12] "   TZ         .    I¨À )z» zÚf Ò~Uñi»©                ÃÐ¢|¦v½óOÑËÜ®Ëd" 400 -
+Not Found: /
+[19/Oct/2022 14:10:02] "GET / HTTP/1.1" 404 3408
+[19/Oct/2022 15:22:16] "GET /admin/ HTTP/1.1" 200 6366
+[19/Oct/2022 15:22:18] "GET /static/admin/css/base.css HTTP/1.1" 304 0
+[19/Oct/2022 15:22:18] "GET /static/admin/css/dark_mode.css HTTP/1.1" 304 0
+[19/Oct/2022 15:22:18] "GET /static/admin/css/nav_sidebar.css HTTP/1.1" 304 0
+[19/Oct/2022 15:22:18] "GET /static/admin/css/dashboard.css HTTP/1.1" 304 0
+[19/Oct/2022 15:22:18] "GET /static/admin/css/responsive.css HTTP/1.1" 304 0
+[19/Oct/2022 15:22:19] "GET /static/admin/css/fonts.css HTTP/1.1" 304 0
+[19/Oct/2022 15:22:19] "GET /static/admin/js/nav_sidebar.js HTTP/1.1" 304 0
+[19/Oct/2022 15:22:19] "GET /static/admin/fonts/Roboto-Bold-webfont.woff HTTP/1.1" 304 0
+[19/Oct/2022 15:22:19] "GET /static/admin/fonts/Roboto-Regular-webfont.woff HTTP/1.1" 304 0
+[19/Oct/2022 15:22:19] "GET /static/admin/fonts/Roboto-Light-webfont.woff HTTP/1.1" 304 0
+[19/Oct/2022 15:22:19] "GET /static/admin/img/icon-addlink.svg HTTP/1.1" 304 0
+[19/Oct/2022 15:22:19] "GET /static/admin/img/icon-changelink.svg HTTP/1.1" 304 0
+[19/Oct/2022 15:23:00] "GET /admin/app/customer/ HTTP/1.1" 200 18226
+[19/Oct/2022 15:23:01] "GET /admin/jsi18n/ HTTP/1.1" 200 8911
+[19/Oct/2022 15:23:02] "GET /static/admin/css/changelists.css HTTP/1.1" 304 0
+[19/Oct/2022 15:23:02] "GET /static/admin/js/jquery.init.js HTTP/1.1" 304 0
+[19/Oct/2022 15:23:02] "GET /static/admin/js/core.js HTTP/1.1" 304 0
+[19/Oct/2022 15:23:02] "GET /static/admin/js/admin/RelatedObjectLookups.js HTTP/1.1" 304 0
+[19/Oct/2022 15:23:02] "GET /static/admin/js/actions.js HTTP/1.1" 304 0
+[19/Oct/2022 15:23:02] "GET /static/admin/js/urlify.js HTTP/1.1" 304 0
+[19/Oct/2022 15:23:02] "GET /static/admin/js/prepopulate.js HTTP/1.1" 304 0
+[19/Oct/2022 15:23:08] "GET /static/admin/js/vendor/xregexp/xregexp.js HTTP/1.1" 200 232381
+[19/Oct/2022 15:23:21] "GET /admin/ HTTP/1.1" 200 6366
+[19/Oct/2022 15:24:21] "GET /admin/app/customer/ HTTP/1.1" 200 18226
+[19/Oct/2022 15:24:22] "GET /admin/jsi18n/ HTTP/1.1" 200 8911
+[19/Oct/2022 15:24:24] "GET /static/admin/js/vendor/jquery/jquery.js HTTP/1.1" 200 288580
+[19/Oct/2022 15:24:25] "GET /static/admin/js/vendor/xregexp/xregexp.js HTTP/1.1" 200 232381
+[19/Oct/2022 15:24:26] "GET /static/admin/js/filters.js HTTP/1.1" 304 0
+[19/Oct/2022 15:24:27] "GET /static/admin/img/tooltag-add.svg HTTP/1.1" 304 0
+[19/Oct/2022 15:24:29] "GET /admin/app/customer/fb7ef791-6185-40a5-b97d-bf4e6d4b4d89/change/ HTTP/1.1" 200 10988
+[19/Oct/2022 15:24:30] "GET /static/admin/css/forms.css HTTP/1.1" 304 0
+[19/Oct/2022 15:24:30] "GET /static/admin/js/prepopulate_init.js HTTP/1.1" 304 0
+[19/Oct/2022 15:24:30] "GET /admin/jsi18n/ HTTP/1.1" 200 8911
+[19/Oct/2022 15:24:31] "GET /static/admin/js/change_form.js HTTP/1.1" 304 0
+[19/Oct/2022 15:24:31] "GET /static/admin/css/widgets.css HTTP/1.1" 304 0
+[19/Oct/2022 15:24:33] "GET /admin/app/customer/ HTTP/1.1" 200 18226
+[19/Oct/2022 15:24:36] "GET /admin/app/customer/fb7ef791-6185-40a5-b97d-bf4e6d4b4d89/change/ HTTP/1.1" 200 10988
+[19/Oct/2022 15:24:41] "GET /admin/app/customer/ HTTP/1.1" 200 18226
+[19/Oct/2022 16:01:58] code 400, message Bad HTTP/0.9 request type ('\x16\x03\x01\x00{\x01\x00\x00w\x03\x03â¶«\x11\x13áLúX"¡')
+[19/Oct/2022 16:01:58] You're accessing the development server over HTTPS, but it only supports HTTP.
+[19/Oct/2022 16:01:58] code 400, message Bad request version ('À\x14À')
+[19/Oct/2022 16:01:58] You're accessing the development server over HTTPS, but it only supports HTTP.
+[19/Oct/2022 16:01:59] code 400, message Bad HTTP/0.9 request type ('\x16\x03\x01\x00{\x01\x00\x00w\x03\x03qé')
+[19/Oct/2022 16:01:59] You're accessing the development server over HTTPS, but it only supports HTTP.
