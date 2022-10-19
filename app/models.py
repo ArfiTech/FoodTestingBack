@@ -2,20 +2,20 @@ from django.db import models
 
 # Create your models here.
 
-
 class Customer(models.Model):
     uuid = models.CharField(primary_key=True, max_length=36)
     password = models.CharField(max_length=15)
     email = models.CharField(max_length=64)
     name = models.CharField(max_length=17, blank=True, null=True)
-    gender = models.CharField(max_length=1)
-    born_date = models.CharField(max_length=10, blank=True, null=True)
-    customer_type = models.CharField(max_length=1)
+    nickname = models.CharField(max_length=20, blank=True, null=True)
+    gender = models.IntegerField()
+    born_date = models.BigIntegerField(blank=True, null=True)
+    customer_type = models.IntegerField()
+    is_social = models.IntegerField()
 
     class Meta:
         managed = False
         db_table = 'customer'
-
 
 class Market(models.Model):
     reg_num = models.CharField(primary_key=True, max_length=12)
@@ -25,12 +25,15 @@ class Market(models.Model):
     period = models.BigIntegerField()
     customer_uuid = models.ForeignKey(Customer, models.DO_NOTHING, db_column='customer_uuid')
     location = models.CharField(max_length=200)
+    street_loc = models.CharField(max_length=200, blank=True, null=True)
     latitude = models.FloatField()
     longtitude = models.FloatField()
     phone_num = models.CharField(max_length=13)
     category = models.CharField(max_length=10)
-    business_hours = models.BigIntegerField()
+    open_time = models.BigIntegerField(blank=True, null=True)
+    close_time = models.BigIntegerField(blank=True, null=True)
     congestion_degree = models.CharField(max_length=45, blank=True, null=True)
+    holiday = models.CharField(max_length=45, blank=True, null=True)
 
     class Meta:
         managed = False
@@ -50,7 +53,8 @@ class Post(models.Model):
     post_date = models.BigIntegerField()
     update_date = models.BigIntegerField()
     contents = models.CharField(max_length=1000)
-    menu_photo = models.CharField(max_length=255, blank=True, null=True)
+    menu_photo = models.ImageField(upload_to="img")
+    is_break = models.IntegerField(blank=True, null=True)
 
     class Meta:
         managed = False
