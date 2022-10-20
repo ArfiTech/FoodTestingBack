@@ -13,7 +13,7 @@ urlpatterns = [
 
     # foodTesting project API
 
-    # uuid로 회원정보를 가져오는 요청
+    path('login/email=<str:email>&pw=<str:pw>', views.login_user),
     path('register/userinfo', views.register_userinfo),
     path('get/userinfo/<str:uuid>', views.get_userinfo),
     path('modify/userinfo', views.modify_userinfo),
