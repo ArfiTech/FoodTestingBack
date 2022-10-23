@@ -228,9 +228,14 @@ def get_locations_nearby_coords(latitude, longtitude, category, max_distance=Non
         gcd_formula,
         (latitude, longtitude, latitude)
     )
-    qs = Market.objects.filter(category=category) \
-        .annotate(distance=distance_raw_sql)\
-        .order_by('distance')
+    if (category == 'all'):
+        qs = Market.objects.all()\
+            .annotate(distance=distance_raw_sql)\
+            .order_by('distance')
+    else:
+        qs = Market.objects.filter(category=category) \
+            .annotate(distance=distance_raw_sql)\
+            .order_by('distance')
     if max_distance is not None:
         qs = qs.filter(distance__lt=max_distance).values()
     return list(qs.values())
