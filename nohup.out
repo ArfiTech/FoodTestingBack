@@ -565,3 +565,72 @@ Quit the server with CONTROL-C.
 [19/Oct/2022 19:40:58] "GET /admin/app/post/f62d502b-3843-4eba-96b7-a3a6bb2a707b/change/ HTTP/1.1" 200 24896
 [19/Oct/2022 19:40:58] "GET /admin/jsi18n/ HTTP/1.1" 200 8911
 [19/Oct/2022 19:41:03] "GET /admin/ HTTP/1.1" 200 6366
+Not Found: /
+[19/Oct/2022 21:07:29] "GET / HTTP/1.1" 404 3449
+[19/Oct/2022 21:07:38] "GET /admin/ HTTP/1.1" 200 6366
+[19/Oct/2022 21:07:39] "GET /static/admin/css/dark_mode.css HTTP/1.1" 304 0
+[19/Oct/2022 21:07:39] "GET /static/admin/css/base.css HTTP/1.1" 304 0
+[19/Oct/2022 21:07:39] "GET /static/admin/css/nav_sidebar.css HTTP/1.1" 304 0
+[19/Oct/2022 21:07:39] "GET /static/admin/css/dashboard.css HTTP/1.1" 304 0
+[19/Oct/2022 21:07:39] "GET /static/admin/js/nav_sidebar.js HTTP/1.1" 304 0
+[19/Oct/2022 21:07:39] "GET /static/admin/css/responsive.css HTTP/1.1" 304 0
+[19/Oct/2022 21:07:39] "GET /static/admin/css/fonts.css HTTP/1.1" 304 0
+[19/Oct/2022 21:07:39] "GET /static/admin/img/icon-changelink.svg HTTP/1.1" 304 0
+[19/Oct/2022 21:07:39] "GET /static/admin/img/icon-addlink.svg HTTP/1.1" 304 0
+[19/Oct/2022 21:07:39] "GET /static/admin/fonts/Roboto-Light-webfont.woff HTTP/1.1" 304 0
+[19/Oct/2022 21:07:39] "GET /static/admin/fonts/Roboto-Bold-webfont.woff HTTP/1.1" 304 0
+[19/Oct/2022 21:07:39] "GET /static/admin/fonts/Roboto-Regular-webfont.woff HTTP/1.1" 304 0
+[19/Oct/2022 21:07:42] "GET /admin/app/customer/ HTTP/1.1" 200 18226
+[19/Oct/2022 21:07:42] "GET /static/admin/css/changelists.css HTTP/1.1" 304 0
+[19/Oct/2022 21:07:42] "GET /static/admin/js/vendor/jquery/jquery.js HTTP/1.1" 304 0
+[19/Oct/2022 21:07:42] "GET /static/admin/js/jquery.init.js HTTP/1.1" 304 0
+[19/Oct/2022 21:07:42] "GET /static/admin/js/admin/RelatedObjectLookups.js HTTP/1.1" 304 0
+[19/Oct/2022 21:07:42] "GET /static/admin/js/core.js HTTP/1.1" 304 0
+[19/Oct/2022 21:07:42] "GET /admin/jsi18n/ HTTP/1.1" 200 8911
+[19/Oct/2022 21:07:42] "GET /static/admin/js/actions.js HTTP/1.1" 304 0
+[19/Oct/2022 21:07:42] "GET /static/admin/js/urlify.js HTTP/1.1" 304 0
+[19/Oct/2022 21:07:42] "GET /static/admin/js/prepopulate.js HTTP/1.1" 304 0
+[19/Oct/2022 21:07:42] "GET /static/admin/js/vendor/xregexp/xregexp.js HTTP/1.1" 304 0
+[19/Oct/2022 21:07:42] "GET /static/admin/js/filters.js HTTP/1.1" 304 0
+[19/Oct/2022 21:07:42] "GET /static/admin/img/tooltag-add.svg HTTP/1.1" 304 0
+Not Found: /get/userinfo/
+[19/Oct/2022 21:08:06] "GET /get/userinfo/?uuid=fb7ef791-6185-40a5-b97d-bf4e6d4b4d89 HTTP/1.1" 404 3548
+[19/Oct/2022 22:12:45,442] - Broken pipe from ('167.94.146.58', 44242)
+Not Found: /
+[19/Oct/2022 22:12:46] "GET / HTTP/1.1" 404 3408
+[19/Oct/2022 22:12:46,948] - Broken pipe from ('167.94.146.58', 59192)
+Not Found: /
+[19/Oct/2022 22:12:47] "GET / HTTP/1.1" 404 3408
+[19/Oct/2022 22:12:47] code 505, message Invalid HTTP version (2.0)
+[19/Oct/2022 22:12:47] "PRI * HTTP/2.0" 505 -
+Not Found: /
+[19/Oct/2022 23:01:08] "GET / HTTP/1.1" 404 3408
+[20/Oct/2022 01:59:32] code 400, message Bad request syntax ('\x16\x03\x01\x00{\x01\x00\x00w\x03\x03VÀÔö\x9dûZ\x03d\x8cA\x8f')
+[20/Oct/2022 01:59:32] You're accessing the development server over HTTPS, but it only supports HTTP.
+[20/Oct/2022 01:59:32] code 400, message Bad request version ('À\x14À')
+[20/Oct/2022 01:59:32] You're accessing the development server over HTTPS, but it only supports HTTP.
+[20/Oct/2022 01:59:33] code 400, message Bad HTTP/0.9 request type ('\x16\x03\x01\x00{\x01\x00\x00w\x03\x03\x9d¢Ü$óøn\x97ñ\x00\x08\x18ÂFÄ¯ÂÙ·E\x0fmä4èNWÛÉË\x8d\x11\x00\x00\x1aÀ/À+À\x11À\x07À\x13À')
+[20/Oct/2022 01:59:33] You're accessing the development server over HTTPS, but it only supports HTTP.
+[20/Oct/2022 03:40:05] code 400, message Bad request syntax ('MGLNDD_13.124.42.211_8000')
+[20/Oct/2022 03:40:05] "MGLNDD_13.124.42.211_8000" 400 -
+[20/Oct/2022 04:05:48,577] - Broken pipe from ('167.248.133.119', 48754)
+Not Found: /
+[20/Oct/2022 04:05:49] "GET / HTTP/1.1" 404 3408
+[20/Oct/2022 04:05:49,899] - Broken pipe from ('167.248.133.119', 42326)
+Not Found: /
+[20/Oct/2022 04:05:50] "GET / HTTP/1.1" 404 3408
+[20/Oct/2022 04:05:50] code 505, message Invalid HTTP version (2.0)
+[20/Oct/2022 04:05:50] "PRI * HTTP/2.0" 505 -
+[20/Oct/2022 12:16:16] "GET /admin/ HTTP/1.1" 200 6366
+[20/Oct/2022 12:16:17] "GET /static/admin/css/dark_mode.css HTTP/1.1" 304 0
+[20/Oct/2022 12:16:17] "GET /static/admin/css/base.css HTTP/1.1" 304 0
+[20/Oct/2022 12:16:17] "GET /static/admin/css/nav_sidebar.css HTTP/1.1" 304 0
+[20/Oct/2022 12:16:17] "GET /static/admin/css/dashboard.css HTTP/1.1" 304 0
+[20/Oct/2022 12:16:17] "GET /static/admin/css/responsive.css HTTP/1.1" 304 0
+[20/Oct/2022 12:16:17] "GET /static/admin/js/nav_sidebar.js HTTP/1.1" 304 0
+[20/Oct/2022 12:16:17] "GET /static/admin/css/fonts.css HTTP/1.1" 304 0
+[20/Oct/2022 12:16:17] "GET /static/admin/fonts/Roboto-Regular-webfont.woff HTTP/1.1" 304 0
+[20/Oct/2022 12:16:17] "GET /static/admin/img/icon-changelink.svg HTTP/1.1" 304 0
+[20/Oct/2022 12:16:17] "GET /static/admin/fonts/Roboto-Light-webfont.woff HTTP/1.1" 304 0
+[20/Oct/2022 12:16:17] "GET /static/admin/fonts/Roboto-Bold-webfont.woff HTTP/1.1" 304 0
+[20/Oct/2022 12:16:17] "GET /static/admin/img/icon-addlink.svg HTTP/1.1" 304 0

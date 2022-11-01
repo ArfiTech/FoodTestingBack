@@ -63,20 +63,20 @@ class Post(models.Model):
 
 class Quesbymarket(models.Model):
     market_reg_num = models.OneToOneField(Market, models.DO_NOTHING, db_column='market_reg_num', primary_key=True)
-    ques_uuid = models.ForeignKey('Questionlist', models.DO_NOTHING, db_column='ques_uuid')
+    ques_uuid = models.ForeignKey('Questionlist', models.DO_NOTHING, db_column='ques_uuid', blank=True, null=True)
+    order = models.IntegerField(blank=True, null=True)
 
     class Meta:
         managed = False
         db_table = 'quesbymarket'
-        unique_together = (('market_reg_num', 'ques_uuid'),)
 
 
 class Questionlist(models.Model):
     ques_uuid = models.CharField(primary_key=True, max_length=36)
-    market_reg_num = models.ForeignKey(Market, models.DO_NOTHING, db_column='market_reg_num')
+    market_reg_num = models.ForeignKey(Market, models.DO_NOTHING, db_column='market_reg_num', blank=True, null=True)
     contents = models.CharField(max_length=200)
     fast_response = models.CharField(max_length=200, blank=True, null=True)
-    order = models.IntegerField(blank=True, null=True)
+    ques_type = models.IntegerField(blank=True, null=True)
 
     class Meta:
         managed = False
