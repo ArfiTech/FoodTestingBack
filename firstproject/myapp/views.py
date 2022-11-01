@@ -10,7 +10,7 @@ from django.http.response import HttpResponse
 from .serializers import CustomerSerializer, MarketSerializer, PostSerializer, ReviewSerializer, TableSerializer
 from myapp.models import NewTable, Customer, Market, Post, Questionlist, Review
 from rest_framework.viewsets import ModelViewSet
-from .models import NewTable
+from .models import NewTable, Quesbymarket
 from .serializers import TableSerializer
 from rest_framework.pagination import PageNumberPagination
 from .pagination import MarketPagination, PostPageNumberPagination
@@ -18,6 +18,8 @@ from django.views.decorators.csrf import csrf_exempt
 from rest_framework.parsers import JSONParser
 from django.db import models
 from django.db.models.expressions import RawSQL
+from django.core import serializers
+import json
 # Create your views here.
 
 
@@ -128,6 +130,7 @@ def get_userinfo(request, uuid):
     return HttpResponse("Not exists", safe=False, status=404)
 
 
+@csrf_exempt
 def modify_userinfo(request):
     table_data = JSONParser().parse(request)
     table = Customer.objects.get(uuid=table_data['uuid'])
@@ -138,6 +141,7 @@ def modify_userinfo(request):
     return JsonResponse("Failed to Update", safe=False, status=status.HTTP_400_BAD_REQUEST)
 
 
+@csrf_exempt
 def register_userinfo(request):
     requestedData = JSONParser().parse(request)
     serializer = CustomerSerializer(data=requestedData)
@@ -149,6 +153,7 @@ def register_userinfo(request):
     return JsonResponse("Failed to Add", safe=False, status=status.HTTP_404_NOT_FOUND)
 
 
+@csrf_exempt
 def post_review(request):
     requestedData = JSONParser().parse(request)
     serializer = ReviewSerializer(data=requestedData)
@@ -163,6 +168,8 @@ def post_review(request):
 
 def getMarketInfoWithPost(request, regnum):
     marketInfo = list(Market.objects.filter(reg_num=regnum).values())
+    for data in marketInfo:
+        data["market_photo"] = "http://ec2-54-180-131-91.ap-northeast-2.compute.amazonaws.com:8000/img/"+data['market_photo']
     postInfo = list(Post.objects.filter(write_market=regnum).values())
     return JsonResponse({"market": marketInfo, "post": postInfo}, safe=False, status=status.HTTP_200_OK)
 
@@ -174,7 +181,10 @@ class getMarketInfobyUUID(ListAPIView):
 
     def get_queryset(self):
         id = self.kwargs['uuid']
-        return Market.objects.filter(customer_uuid=id)
+        marketInfo = list(Market.objects.filter(customer_uuid=id))
+        for data in marketInfo:
+            data["market_photo"] = "http://ec2-54-180-131-91.ap-northeast-2.compute.amazonaws.com:8000/img/"+data['market_photo']
+        return JsonResponse(marketInfo, safe=False, status=status.HTTP_200_OK)
 
 
 class getMarketInfobyCategory(ListAPIView):
@@ -186,6 +196,7 @@ class getMarketInfobyCategory(ListAPIView):
         return Market.objects.filter(category=category)
 
 
+@csrf_exempt
 def modify_marketInfo(request):
     table_data = JSONParser().parse(request)
     table = Market.objects.get(reg_num=table_data['reg_num'])
@@ -196,6 +207,7 @@ def modify_marketInfo(request):
     return JsonResponse("Failed to Update", safe=False)
 
 
+@csrf_exempt
 def post_menu(request):
     requestedData = JSONParser().parse(request)
     serializer = PostSerializer(data=requestedData)
@@ -204,6 +216,7 @@ def post_menu(request):
     return JsonResponse("Failed to post new menu", safe=False, status=status.HTTP_400_BAD_REQUEST)
 
 
+@csrf_exempt
 def delete_menu(request, regnum, uuid):
     if (Post.objects.filter(write_market=regnum, post_uuid=uuid).exists()):
         deletedData = Post.objects.get(write_market=regnum, post_uuid=uuid)
@@ -215,6 +228,8 @@ def delete_menu(request, regnum, uuid):
 def get_marketInfo_orderBy_distance(request, lat, lng, category):
     data = get_locations_nearby_coords(
         lat, lng, category)
+    for d in data:
+        d["market_photo"] = "http://ec2-54-180-131-91.ap-northeast-2.compute.amazonaws.com:8000/img/"+d['market_photo']
     return JsonResponse(data, safe=False)
 
 
@@ -240,6 +255,41 @@ def get_locations_nearby_coords(latitude, longtitude, category, max_distance=Non
         qs = qs.filter(distance__lt=max_distance).values()
     return list(qs.values())
 
+# 사장님이 선택한 질문 보내기
+
+
+def getReviewQuestions(request, uuid):
+    ques_uuid = list(Quesbymarket.objects.filter(
+        market_reg_num=uuid).values('ques_uuid'))
+    questions = []
+    for uuid in ques_uuid:
+        query_set = Questionlist.objects.filter(ques_uuid=uuid).values()
+        questions.append(query_set)
+    return JsonResponse(json.dumps(questions), safe=False, status=status.HTTP_200_OK)
+
+# 사용자가 작성한 리뷰 post
+
+
+@csrf_exempt
+def postReviews(request):
+    requestedData = JSONParser().parse(request)
+    review_uuid = requestedData['review_uuid']
+    writer_uuid = requestedData['writer_uuid']
+    market_reg_num = requestedData['market_reg_num']
+    review_date = requestedData['review_date']
+    answers = requestedData['answers']
+
+    for answer in answers:
+        ques = answer[0]
+        ans = answer[1]
+        review = {'review_uuid': review_uuid, 'writer_uuid': writer_uuid, 'market_reg_num': market_reg_num,
+                  'ques_uuid': ques, 'review_line': ans, 'review_date': review_date}
+        serializer = ReviewSerializer(data=json.dumps(review))
+        if (serializer.is_valid()):
+            serializer.save()
+        else:
+            return JsonResponse("Failed to register", safe=False, status=status.HTTP_400_BAD_REQUEST)
+    return JsonResponse("Success to register", safe=False, status=status.HTTP_200_OK)
 
 # 매장, 음식 같이 나오게 - 1
 

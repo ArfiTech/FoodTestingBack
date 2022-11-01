@@ -1,7 +1,7 @@
 from dataclasses import field
 from django.core import serializers
 from rest_framework import serializers
-from .models import NewTable, Customer, Review, Market, Post
+from .models import NewTable, Customer, Quesbymarket, Questionlist, Review, Market, Post
 
 # Serializer: 정의한 field만을 return
 
@@ -41,6 +41,18 @@ class PostSerializer(serializers.ModelSerializer):
     class Meta:
         model = Post
         fields = '__all__'
+
+
+class QuesbymarketSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Quesbymarket
+        field = '__all__'
+
+
+class QuestionlistSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Questionlist
+        field = '__all__'
 
 
 '''
