@@ -634,3 +634,161 @@ Not Found: /
 [20/Oct/2022 12:16:17] "GET /static/admin/fonts/Roboto-Light-webfont.woff HTTP/1.1" 304 0
 [20/Oct/2022 12:16:17] "GET /static/admin/fonts/Roboto-Bold-webfont.woff HTTP/1.1" 304 0
 [20/Oct/2022 12:16:17] "GET /static/admin/img/icon-addlink.svg HTTP/1.1" 304 0
+base_dir:  /home/ubuntu/FoodTestingBack
+base_dir:  /home/ubuntu/FoodTestingBack
+Watching for file changes with StatReloader
+Performing system checks...
+
+System check identified no issues (0 silenced).
+November 02, 2022 - 10:56:07
+Django version 4.1.2, using settings 'foodTestingProject.settings'
+Starting development server at http://0:8000/
+Quit the server with CONTROL-C.
+Not Found: /
+[02/Nov/2022 10:57:11] "GET / HTTP/1.1" 404 4432
+Not Found: /
+[02/Nov/2022 10:58:06] "GET / HTTP/1.1" 404 4432
+Not Found: /favicon.ico
+[02/Nov/2022 10:58:06] "GET /favicon.ico HTTP/1.1" 404 4483
+[02/Nov/2022 10:58:23] "GET /img/img/image001.png HTTP/1.1" 200 192990
+[02/Nov/2022 10:58:26] "GET /admin/ HTTP/1.1" 200 6718
+[02/Nov/2022 10:58:27] "GET /admin/login/?next=/admin/ HTTP/1.1" 302 0
+[02/Nov/2022 10:58:27] "GET /admin/ HTTP/1.1" 200 6718
+Not Found: /
+[02/Nov/2022 10:58:32] "GET / HTTP/1.1" 404 4432
+[02/Nov/2022 10:59:09] "GET /admin HTTP/1.1" 301 0
+[02/Nov/2022 10:59:09] "GET /admin/ HTTP/1.1" 302 0
+[02/Nov/2022 10:59:09] "GET /admin/login/?next=/admin/ HTTP/1.1" 200 2238
+[02/Nov/2022 10:59:09] "GET /static/admin/css/base.css HTTP/1.1" 200 20344
+[02/Nov/2022 10:59:09] "GET /static/admin/css/dark_mode.css HTTP/1.1" 200 796
+[02/Nov/2022 10:59:09] "GET /static/admin/css/responsive.css HTTP/1.1" 200 18854
+[02/Nov/2022 10:59:09] "GET /static/admin/css/login.css HTTP/1.1" 200 958
+[02/Nov/2022 10:59:09] "GET /static/admin/js/nav_sidebar.js HTTP/1.1" 200 3763
+[02/Nov/2022 10:59:09] "GET /static/admin/css/nav_sidebar.css HTTP/1.1" 200 2619
+[02/Nov/2022 10:59:09] "GET /static/admin/css/fonts.css HTTP/1.1" 200 423
+[02/Nov/2022 10:59:10] "GET /static/admin/fonts/Roboto-Regular-webfont.woff HTTP/1.1" 200 85876
+[02/Nov/2022 10:59:10] "GET /static/admin/fonts/Roboto-Light-webfont.woff HTTP/1.1" 200 85692
+[02/Nov/2022 10:59:18] "POST /admin/login/?next=/admin/ HTTP/1.1" 302 0
+[02/Nov/2022 10:59:18] "GET /admin/ HTTP/1.1" 200 6718
+[02/Nov/2022 10:59:20] "GET /static/admin/css/dashboard.css HTTP/1.1" 200 380
+[02/Nov/2022 10:59:20] "GET /static/admin/img/icon-changelink.svg HTTP/1.1" 200 380
+[02/Nov/2022 10:59:20] "GET /static/admin/img/icon-addlink.svg HTTP/1.1" 200 331
+[02/Nov/2022 10:59:20] "GET /static/admin/fonts/Roboto-Bold-webfont.woff HTTP/1.1" 200 86184
+[02/Nov/2022 10:59:24] "GET /admin/app/customer/ HTTP/1.1" 200 20342
+[02/Nov/2022 10:59:24] "GET /static/admin/js/admin/RelatedObjectLookups.js HTTP/1.1" 200 8985
+[02/Nov/2022 10:59:24] "GET /static/admin/js/jquery.init.js HTTP/1.1" 200 347
+[02/Nov/2022 10:59:24] "GET /static/admin/js/core.js HTTP/1.1" 200 5698
+[02/Nov/2022 10:59:24] "GET /static/admin/css/changelists.css HTTP/1.1" 200 6395
+[02/Nov/2022 10:59:24] "GET /static/admin/js/vendor/jquery/jquery.js HTTP/1.1" 200 288580
+[02/Nov/2022 10:59:24] "GET /static/admin/js/actions.js HTTP/1.1" 200 7872
+[02/Nov/2022 10:59:24] "GET /static/admin/js/prepopulate.js HTTP/1.1" 200 1531
+[02/Nov/2022 10:59:24] "GET /static/admin/js/urlify.js HTTP/1.1" 200 7902
+[02/Nov/2022 10:59:24] "GET /admin/jsi18n/ HTTP/1.1" 200 8911
+[02/Nov/2022 10:59:24] "GET /static/admin/js/vendor/xregexp/xregexp.js HTTP/1.1" 200 232381
+[02/Nov/2022 10:59:24] "GET /static/admin/js/filters.js HTTP/1.1" 200 966
+[02/Nov/2022 10:59:25] "GET /static/admin/img/tooltag-add.svg HTTP/1.1" 200 331
+[02/Nov/2022 10:59:26] "GET /admin/app/customer/ HTTP/1.1" 302 0
+[02/Nov/2022 10:59:27] "GET /admin/login/?next=/admin/app/customer/ HTTP/1.1" 200 2264
+[02/Nov/2022 10:59:28] "GET /static/admin/css/responsive.css HTTP/1.1" 200 18854
+[02/Nov/2022 10:59:28] "GET /static/admin/css/dark_mode.css HTTP/1.1" 200 796
+[02/Nov/2022 10:59:28] "GET /static/admin/css/login.css HTTP/1.1" 200 958
+[02/Nov/2022 10:59:28] "GET /static/admin/js/nav_sidebar.js HTTP/1.1" 200 3763
+[02/Nov/2022 10:59:28] "GET /static/admin/css/nav_sidebar.css HTTP/1.1" 200 2619
+[02/Nov/2022 10:59:28] "GET /static/admin/css/base.css HTTP/1.1" 200 20344
+[02/Nov/2022 10:59:29] "GET /static/admin/css/fonts.css HTTP/1.1" 200 423
+[02/Nov/2022 10:59:29] "GET /static/admin/fonts/Roboto-Light-webfont.woff HTTP/1.1" 200 85692
+[02/Nov/2022 10:59:29] "GET /static/admin/fonts/Roboto-Regular-webfont.woff HTTP/1.1" 200 85876
+[02/Nov/2022 10:59:30] "GET /admin/app/customer/asdfrewq/change/ HTTP/1.1" 200 11811
+[02/Nov/2022 10:59:30] "GET /static/admin/js/prepopulate_init.js HTTP/1.1" 200 586
+[02/Nov/2022 10:59:30] "GET /static/admin/css/forms.css HTTP/1.1" 200 8944
+[02/Nov/2022 10:59:30] "GET /admin/jsi18n/ HTTP/1.1" 200 8911
+[02/Nov/2022 10:59:30] "GET /static/admin/css/widgets.css HTTP/1.1" 200 11297
+[02/Nov/2022 10:59:30] "GET /static/admin/js/change_form.js HTTP/1.1" 200 606
+[02/Nov/2022 10:59:32] "GET /admin/app/customer/ HTTP/1.1" 200 20342
+[02/Nov/2022 10:59:32] "GET /admin/jsi18n/ HTTP/1.1" 200 8911
+[02/Nov/2022 10:59:35] "GET /admin/app/market/ HTTP/1.1" 200 20469
+[02/Nov/2022 10:59:35] "GET /admin/jsi18n/ HTTP/1.1" 200 8911
+[02/Nov/2022 10:59:42] "GET /admin/app/post/ HTTP/1.1" 200 17304
+[02/Nov/2022 10:59:42] "GET /admin/jsi18n/ HTTP/1.1" 200 8911
+[02/Nov/2022 10:59:48] "GET /admin/app/quesbymarket/ HTTP/1.1" 200 8181
+[02/Nov/2022 10:59:48] "GET /admin/jsi18n/ HTTP/1.1" 200 8911
+[02/Nov/2022 10:59:50] "GET /admin/app/quesbymarket/007-26-15182/change/ HTTP/1.1" 200 16658
+[02/Nov/2022 10:59:50] "GET /static/admin/img/icon-deletelink.svg HTTP/1.1" 200 392
+[02/Nov/2022 10:59:50] "GET /admin/jsi18n/ HTTP/1.1" 200 8911
+[02/Nov/2022 10:59:50] "GET /static/admin/img/icon-viewlink.svg HTTP/1.1" 200 581
+[02/Nov/2022 10:59:52] "GET /admin/app/questionlist/ HTTP/1.1" 200 12229
+[02/Nov/2022 10:59:52] "GET /admin/jsi18n/ HTTP/1.1" 200 8911
+[02/Nov/2022 10:59:56] "GET /admin/app/review/ HTTP/1.1" 200 9464
+[02/Nov/2022 10:59:56] "GET /admin/jsi18n/ HTTP/1.1" 200 8911
+[02/Nov/2022 10:59:58] "GET /admin/app/questionlist/ HTTP/1.1" 200 12229
+[02/Nov/2022 10:59:58] "GET /admin/jsi18n/ HTTP/1.1" 200 8911
+[02/Nov/2022 11:00:05] "GET /admin/app/quesbymarket/ HTTP/1.1" 200 8181
+[02/Nov/2022 11:00:05] "GET /admin/jsi18n/ HTTP/1.1" 200 8911
+[02/Nov/2022 11:00:07] "GET /admin/app/post/ HTTP/1.1" 200 17304
+[02/Nov/2022 11:00:07] "GET /admin/jsi18n/ HTTP/1.1" 200 8911
+[02/Nov/2022 11:00:08] "GET /admin/app/customer/ HTTP/1.1" 200 20342
+[02/Nov/2022 11:00:08] "GET /admin/jsi18n/ HTTP/1.1" 200 8911
+[02/Nov/2022 11:02:01] "GET /admin/app/post/ HTTP/1.1" 200 17304
+[02/Nov/2022 11:02:02] "GET /admin/app/quesbymarket/ HTTP/1.1" 200 8181
+[02/Nov/2022 11:02:02] "GET /admin/app/questionlist/ HTTP/1.1" 200 12229
+[02/Nov/2022 11:02:03] "GET /admin/app/review/ HTTP/1.1" 200 9464
+[02/Nov/2022 11:02:03] "GET /admin/app/questionlist/ HTTP/1.1" 200 12229
+[02/Nov/2022 11:02:04] "GET /admin/app/quesbymarket/007-26-15182/change/ HTTP/1.1" 200 16658
+[02/Nov/2022 11:02:04] "GET /admin/app/quesbymarket/ HTTP/1.1" 200 8181
+Not Found: /
+[02/Nov/2022 11:02:09] "GET / HTTP/1.1" 404 4432
+[02/Nov/2022 11:02:30] "GET /admin/ HTTP/1.1" 200 6718
+[02/Nov/2022 11:02:32] "GET /admin/app/customer/ HTTP/1.1" 200 20342
+[02/Nov/2022 11:02:32] "GET /admin/jsi18n/ HTTP/1.1" 200 8911
+[02/Nov/2022 11:02:35] "GET /admin/app/customer/fb7ef791-6185-40a5-b97d-bf4e6d4b4d89/change/ HTTP/1.1" 200 11963
+[02/Nov/2022 11:02:35] "GET /admin/jsi18n/ HTTP/1.1" 200 8911
+[02/Nov/2022 11:02:53] "GET /admin/app/customer/ HTTP/1.1" 200 20342
+[02/Nov/2022 11:02:53] "GET /admin/jsi18n/ HTTP/1.1" 200 8911
+Not Found: /
+[02/Nov/2022 11:03:09] "GET / HTTP/1.1" 404 4432
+[02/Nov/2022 11:03:29] "POST /register/userinfo HTTP/1.1" 201 188
+[02/Nov/2022 11:03:36] "GET /admin/app/customer/ HTTP/1.1" 200 20665
+[02/Nov/2022 11:03:36] "GET /admin/jsi18n/ HTTP/1.1" 200 8911
+[02/Nov/2022 11:03:45] "GET /login/email=syZqWpJSgNgr@test.com&pw=6Li+A!%7C@Fz HTTP/1.1" 200 229
+[02/Nov/2022 11:04:10] "GET /login/email=ddd@ddd.ddd&pw=1234 HTTP/1.1" 200 207
+[02/Nov/2022 11:33:27] "GET /login/email=ddd@ddd.ddd&pw=1234 HTTP/1.1" 200 207
+[02/Nov/2022 12:42:06,259] - Broken pipe from ('18.135.17.26', 21345)
+[02/Nov/2022 12:53:27,525] - Broken pipe from ('18.135.17.26', 21345)
+[02/Nov/2022 13:04:47,258] - Broken pipe from ('18.135.17.26', 21345)
+Not Found: /
+[02/Nov/2022 13:11:44] "GET / HTTP/1.1" 404 4391
+[02/Nov/2022 13:16:08,924] - Broken pipe from ('18.135.17.26', 21345)
+[02/Nov/2022 13:27:30,404] - Broken pipe from ('18.135.17.26', 21345)
+[02/Nov/2022 13:42:36] code 400, message Bad request version ('À\x14À')
+[02/Nov/2022 13:42:36] You're accessing the development server over HTTPS, but it only supports HTTP.
+Not Found: /favicon.ico
+[02/Nov/2022 13:42:38] "GET /favicon.ico HTTP/1.1" 404 4442
+[02/Nov/2022 13:42:40] code 400, message Bad request version ('ÍÇµ\x87@©iÕ\x13ú')
+[02/Nov/2022 13:42:40] You're accessing the development server over HTTPS, but it only supports HTTP.
+Not Found: /manage/account/login
+[02/Nov/2022 13:42:42] "GET /manage/account/login HTTP/1.1" 404 4469
+[02/Nov/2022 13:42:44] code 400, message Bad request version ('À\x14À')
+[02/Nov/2022 13:42:44] You're accessing the development server over HTTPS, but it only supports HTTP.
+[02/Nov/2022 13:42:46] "GET /admin/index.html HTTP/1.1" 302 0
+[02/Nov/2022 13:42:48] code 400, message Bad request version ('À\x14À')
+[02/Nov/2022 13:42:48] You're accessing the development server over HTTPS, but it only supports HTTP.
+Not Found: /index.html
+[02/Nov/2022 13:42:50] "GET /index.html HTTP/1.1" 404 4439
+[02/Nov/2022 13:42:52] code 400, message Bad request version ('/H\x8b8Ò\x8cé\x16^ó')
+[02/Nov/2022 13:42:52] You're accessing the development server over HTTPS, but it only supports HTTP.
+Not Found: /
+[02/Nov/2022 13:42:54] "GET / HTTP/1.1" 404 4391
+[02/Nov/2022 14:36:26] code 400, message Bad request version ('À\x14À')
+[02/Nov/2022 14:36:26] You're accessing the development server over HTTPS, but it only supports HTTP.
+/home/ubuntu/FoodTestingBack/app/views.py changed, reloading.
+base_dir:  /home/ubuntu/FoodTestingBack
+Watching for file changes with StatReloader
+Performing system checks...
+
+System check identified no issues (0 silenced).
+November 02, 2022 - 15:17:33
+Django version 4.1.2, using settings 'foodTestingProject.settings'
+Starting development server at http://0:8000/
+Quit the server with CONTROL-C.
+Not Found: /
+[02/Nov/2022 15:18:19] "GET / HTTP/1.1" 404 4432
