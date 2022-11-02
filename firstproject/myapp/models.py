@@ -64,7 +64,8 @@ class Post(models.Model):
     post_date = models.BigIntegerField()
     update_date = models.BigIntegerField()
     contents = models.CharField(max_length=1000)
-    #fast_response = models.CharField(max_length=200, blank=True, null=True)
+    menu_photo = models.ImageField(upload_to="img")
+    is_break = models.IntegerField(blank=True, null=True)
 
     class Meta:
         managed = False

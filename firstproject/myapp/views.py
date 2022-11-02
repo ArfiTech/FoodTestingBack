@@ -124,7 +124,7 @@ def login_user(request, email, pw):
 
 def get_userinfo(request, uuid):
     if (Customer.objects.filter(uuid=uuid).exists()):
-        data = list(Customer.objects.filter(uuid=uuid).values())
+        data = list(Customer.objects.filter(uuid=uuid).values())[0]
         # attribute -> serializer or all values()
         return JsonResponse(data, safe=False, status=200)
     return HttpResponse("Not exists", safe=False, status=404)
@@ -171,6 +171,8 @@ def getMarketInfoWithPost(request, regnum):
     for data in marketInfo:
         data["market_photo"] = "http://ec2-54-180-131-91.ap-northeast-2.compute.amazonaws.com:8000/img/"+data['market_photo']
     postInfo = list(Post.objects.filter(write_market=regnum).values())
+    for post in postInfo:
+        post["menu_photo"] = "http://ec2-54-180-131-91.ap-northeast-2.compute.amazonaws.com:8000/img/"+post["menu_photo"]
     return JsonResponse({"market": marketInfo, "post": postInfo}, safe=False, status=status.HTTP_200_OK)
 
 
