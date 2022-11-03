@@ -792,3 +792,22 @@ Starting development server at http://0:8000/
 Quit the server with CONTROL-C.
 Not Found: /
 [02/Nov/2022 15:18:19] "GET / HTTP/1.1" 404 4432
+[02/Nov/2022 16:16:28,156] - Broken pipe from ('167.94.145.60', 56260)
+Not Found: /
+[02/Nov/2022 16:16:29] "GET / HTTP/1.1" 404 4391
+[02/Nov/2022 16:16:29,645] - Broken pipe from ('167.94.145.60', 38710)
+Not Found: /
+[02/Nov/2022 16:16:29] "GET / HTTP/1.1" 404 4391
+[02/Nov/2022 16:16:30] code 505, message Invalid HTTP version (2.0)
+[02/Nov/2022 16:16:30] "PRI * HTTP/2.0" 505 -
+[02/Nov/2022 20:04:57] code 400, message Bad request version ('À\x14À')
+[02/Nov/2022 20:04:57] You're accessing the development server over HTTPS, but it only supports HTTP.
+[02/Nov/2022 20:04:57] code 400, message Bad HTTP/0.9 request type ('\x16\x03\x01\x00{\x01\x00\x00w\x03\x03Ö#6²tSËÔ\x99¾X5q\x91Ð"¼§!Q\x8b¥Åû®\x1a"´bb\x86o\x00\x00\x1aÀ/À+À\x11À\x07À\x13À')
+[02/Nov/2022 20:04:57] You're accessing the development server over HTTPS, but it only supports HTTP.
+[02/Nov/2022 20:04:57] code 400, message Bad request version ('À\x14À')
+[02/Nov/2022 20:04:57] You're accessing the development server over HTTPS, but it only supports HTTP.
+Not Found: /
+[02/Nov/2022 22:59:25] "GET / HTTP/1.1" 404 4391
+Not Found: /
+[03/Nov/2022 01:10:48] "GET / HTTP/1.1" 404 4391
+[03/Nov/2022 01:10:48,383] - Broken pipe from ('34.78.6.216', 46892)
