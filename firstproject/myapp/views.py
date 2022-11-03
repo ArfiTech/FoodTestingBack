@@ -169,10 +169,10 @@ def post_review(request):
 def getMarketInfoWithPost(request, regnum):
     marketInfo = list(Market.objects.filter(reg_num=regnum).values())
     for data in marketInfo:
-        data["market_photo"] = "http://ec2-54-180-131-91.ap-northeast-2.compute.amazonaws.com:8000/img/"+data['market_photo']
+        data["market_photo"] = "http://ec2-13-125-198-213.ap-northeast-2.compute.amazonaws.com:8000/img/"+data['market_photo']
     postInfo = list(Post.objects.filter(write_market=regnum).values())
     for post in postInfo:
-        post["menu_photo"] = "http://ec2-54-180-131-91.ap-northeast-2.compute.amazonaws.com:8000/img/"+post["menu_photo"]
+        post["menu_photo"] = "http://ec2-13-125-198-213.ap-northeast-2.compute.amazonaws.com:8000/img/"+post["menu_photo"]
     return JsonResponse({"market": marketInfo, "post": postInfo}, safe=False, status=status.HTTP_200_OK)
 
 
@@ -185,7 +185,7 @@ class getMarketInfobyUUID(ListAPIView):
         id = self.kwargs['uuid']
         marketInfo = list(Market.objects.filter(customer_uuid=id))
         for data in marketInfo:
-            data["market_photo"] = "http://ec2-54-180-131-91.ap-northeast-2.compute.amazonaws.com:8000/img/"+data['market_photo']
+            data["market_photo"] = "http://ec2-13-125-198-213.ap-northeast-2.compute.amazonaws.com:8000/img/"+data['market_photo']
         return JsonResponse(marketInfo, safe=False, status=status.HTTP_200_OK)
 
 
@@ -231,7 +231,7 @@ def get_marketInfo_orderBy_distance(request, lat, lng, category):
     data = get_locations_nearby_coords(
         lat, lng, category)
     for d in data:
-        d["market_photo"] = "http://ec2-54-180-131-91.ap-northeast-2.compute.amazonaws.com:8000/img/"+d['market_photo']
+        d["market_photo"] = "http://ec2-13-125-198-213.ap-northeast-2.compute.amazonaws.com:8000/img/"+d['market_photo']
     return JsonResponse(data, safe=False)
 
 
