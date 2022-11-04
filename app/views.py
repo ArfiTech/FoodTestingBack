@@ -28,7 +28,7 @@ def login_user(request, email, pw):
     if (Customer.objects.filter(email=email).exists()):
         customer = Customer.objects.filter(email=email, password=pw)
         if (customer.exists()):
-            return JsonResponse(list(customer.values()), safe=False, status=status.HTTP_200_OK)
+            return JsonResponse(list(customer.values())[0], safe=False, status=status.HTTP_200_OK)
         else:
             return JsonResponse('Wrong password', safe=False, status=status.HTTP_404_NOT_FOUND)
     return JsonResponse("Not exist email", safe=False, status=status.HTTP_404_NOT_FOUND)
