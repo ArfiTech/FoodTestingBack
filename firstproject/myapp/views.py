@@ -116,7 +116,7 @@ def login_user(request, email, pw):
     if (Customer.objects.filter(email=email).exists()):
         customer = Customer.objects.filter(email=email, password=pw)
         if (customer.exists()):
-            return JsonResponse(list(customer.values()), safe=False, status=status.HTTP_200_OK)
+            return JsonResponse(list(customer.values())[0], safe=False, status=status.HTTP_200_OK)
         else:
             return JsonResponse('Wrong password', safe=False, status=status.HTTP_404_NOT_FOUND)
     return JsonResponse("Not exist email", safe=False, status=status.HTTP_404_NOT_FOUND)
@@ -271,6 +271,8 @@ def getReviewQuestions(request, uuid):
 
 # 사용자가 작성한 리뷰 post
 
+# 수정필요
+
 
 @csrf_exempt
 def postReviews(request):
@@ -292,6 +294,10 @@ def postReviews(request):
         else:
             return JsonResponse("Failed to register", safe=False, status=status.HTTP_400_BAD_REQUEST)
     return JsonResponse("Success to register", safe=False, status=status.HTTP_200_OK)
+
+
+def getReviewAnswers(request):
+    return True
 
 # 매장, 음식 같이 나오게 - 1
 
