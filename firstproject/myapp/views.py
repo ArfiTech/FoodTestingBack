@@ -176,17 +176,26 @@ def getMarketInfoWithPost(request, regnum):
     return JsonResponse({"market": marketInfo, "post": postInfo}, safe=False, status=status.HTTP_200_OK)
 
 
-class getMarketInfobyUUID(ListAPIView):
-    #queryset = Market.objects.all()
-    serializer_class = MarketSerializer
-    pagination_class = MarketPagination
+def getMarketInfobyUUID(request, uuid):
 
-    def get_queryset(self):
-        id = self.kwargs['uuid']
-        marketInfo = list(Market.objects.filter(customer_uuid=id))
-        for data in marketInfo:
-            data["market_photo"] = "http://ec2-13-125-198-213.ap-northeast-2.compute.amazonaws.com:8000/img/"+data['market_photo']
-        return JsonResponse(marketInfo, safe=False, status=status.HTTP_200_OK)
+    marketInfo = list(Market.objects.filter(customer_uuid=uuid).values())
+    result = []
+    for data in marketInfo:
+        data["market_photo"] = "http://ec2-13-125-198-213.ap-northeast-2.compute.amazonaws.com:8000/img/" + \
+            data['market_photo']
+        postInfo = list(Post.objects.filter(
+            write_market=data["reg_num"]).values())
+        for post in postInfo:
+            post["menu_photo"] = "http://ec2-13-125-198-213.ap-northeast-2.compute.amazonaws.com:8000/img/"+post["menu_photo"]
+        result.append({"market": data, "post": postInfo})
+        '''
+        postInfo = list(Post.objects.filter(
+            writer_uuid=data['customer_uuid']).values())
+        for post in postInfo:
+            post["menu_photo"] = "http://ec2-13-125-198-213.ap-northeast-2.compute.amazonaws.com:8000/img/"+post["menu_photo"]
+            result.append({"market": marketInfo})
+        '''
+    return JsonResponse(result, safe=False)
 
 
 class getMarketInfobyCategory(ListAPIView):
@@ -277,17 +286,23 @@ def getReviewQuestions(request, uuid):
 @csrf_exempt
 def postReviews(request):
     requestedData = JSONParser().parse(request)
-    review_uuid = requestedData['review_uuid']
-    writer_uuid = requestedData['writer_uuid']
-    market_reg_num = requestedData['market_reg_num']
-    review_date = requestedData['review_date']
-    answers = requestedData['answers']
+    for data in requestedData:
+        review_uuid = data["uuid"]
+        writer_uuid = data["writer_uuid"]
+        market_reg_num = data["RestaurantRegNumber"]
+        ques_uuid = data["query_uuid"]
+        review_date = data["post_date"]
+        review_line = data["contents"]
 
-    for answer in answers:
-        ques = answer[0]
-        ans = answer[1]
-        review = {'review_uuid': review_uuid, 'writer_uuid': writer_uuid, 'market_reg_num': market_reg_num,
-                  'ques_uuid': ques, 'review_line': ans, 'review_date': review_date}
+        review = {
+            'review_uuid': review_uuid,
+            'writer_uuid': writer_uuid,
+            'market_reg_num': market_reg_num,
+            'ques_uuid': ques_uuid,
+            'review_line': review_line,
+            'review_date': review_date
+        }
+
         serializer = ReviewSerializer(data=json.dumps(review))
         if (serializer.is_valid()):
             serializer.save()

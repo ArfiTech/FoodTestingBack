@@ -65,7 +65,7 @@ class Post(models.Model):
     update_date = models.BigIntegerField()
     contents = models.CharField(max_length=1000)
     menu_photo = models.ImageField(upload_to="img")
-    is_break = models.IntegerField(blank=True, null=True)
+    #is_break = models.IntegerField(blank=True, null=True)
 
     class Meta:
         managed = False
