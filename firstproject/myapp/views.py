@@ -268,7 +268,7 @@ def getReviewQuestions(request, reg_num):
         market_reg_num=reg_num).values('ques_uuid'))
     questions = []
     for uuid in ques_uuid:
-        query_set = Questionlist.objects.filter(ques_uuid=uuid).values()
+        query_set = Questionlist.objects.filter(ques_uuid=uuid).first()
         questions.append(query_set)
     return JsonResponse(json.dumps(questions), safe=False, status=status.HTTP_200_OK)
 
