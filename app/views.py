@@ -83,12 +83,12 @@ def getMarketInfoWithPost(request, regnum):
     marketInfo = list(Market.objects.filter(reg_num=regnum).values())
     for data in marketInfo:
         data["market_photo"] = "http://ec2-13-125-198-213.ap-northeast-2.compute.amazonaws.com:8000/img/"+data['market_photo']
-    postInfo = list(Post.objects.filter(write_market=regnum).values())
+        postInfo = list(Post.objects.filter(write_market=regnum).values())
     for post in postInfo:
         post["menu_photo"] = "http://ec2-13-125-198-213.ap-northeast-2.compute.amazonaws.com:8000/img/"+post["menu_photo"]
-    return JsonResponse({"market": marketInfo, "post": postInfo}, safe=False, status=status.HTTP_200_OK)
+    return JsonResponse([{"market": marketInfo[0], "post": postInfo}], safe=False, status=status.HTTP_200_OK)
 
-
+'''
 class getMarketInfobyUUID(ListAPIView):
     #queryset = Market.objects.all()
     serializer_class = MarketSerializer
@@ -100,7 +100,28 @@ class getMarketInfobyUUID(ListAPIView):
         for data in marketInfo:
             data["market_photo"] = "http://ec2-13-125-198-213.ap-northeast-2.compute.amazonaws.com:8000/img/"+data['market_photo']
         return JsonResponse(marketInfo, safe=False, status=status.HTTP_200_OK)
+'''
 
+def getMarketInfobyUUID(request, uuid):
+
+    marketInfo = list(Market.objects.filter(customer_uuid=uuid).values())
+    result = []
+    for data in marketInfo:
+        data["market_photo"] = "http://ec2-13-125-198-213.ap-northeast-2.compute.amazonaws.com:8000/img/" + \
+            data['market_photo']
+        postInfo = list(Post.objects.filter(
+            write_market=data["reg_num"]).values())
+        for post in postInfo:
+            post["menu_photo"] = "http://ec2-13-125-198-213.ap-northeast-2.compute.amazonaws.com:8000/img/"+post["menu_photo"]
+        result.append({"market": data, "post": postInfo})
+        '''
+        postInfo = list(Post.objects.filter(
+            writer_uuid=data['customer_uuid']).values())
+        for post in postInfo:
+            post["menu_photo"] = "http://ec2-13-125-198-213.ap-northeast-2.compute.amazonaws.com:8000/img/"+post["menu_photo"]
+            result.append({"market": marketInfo})
+        '''
+    return JsonResponse(result, safe=False)
 
 class getMarketInfobyCategory(ListAPIView):
     serializer_class = MarketSerializer
@@ -145,6 +166,7 @@ def get_marketInfo_orderBy_distance(request, lat, lng, category):
         lat, lng, category)
     for d in data:
         d["market_photo"] = "http://ec2-13-125-198-213.ap-northeast-2.compute.amazonaws.com:8000/img/"+d['market_photo']
+        del d["distance"]
     return JsonResponse(data, safe=False)
 
 
