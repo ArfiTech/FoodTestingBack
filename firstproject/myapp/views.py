@@ -236,6 +236,7 @@ def get_marketInfo_orderBy_distance(request, lat, lng, category):
         lat, lng, category)
     for d in data:
         d["market_photo"] = "http://ec2-13-125-198-213.ap-northeast-2.compute.amazonaws.com:8000/img/"+d['market_photo']
+        del d["distance"]
     return JsonResponse(data, safe=False)
 
 
