@@ -292,16 +292,31 @@ def registerQuestions(request):
             return JsonResponse("Failed to register question", safe=False, status=status.HTTP_400_BAD_REQUEST)
     return JsonResponse("Success to register questions by market", safe=False, status=status.HTTP_200_OK)
 
+# 사장님이 작성한 질문들 response
+
 
 @csrf_exempt
 def postReviewQuestions(request):
     # 사장님이 작성한 질문 post
     requestedData = JSONParser().parse(request)
+    market_reg_num = requestedData['market_reg_num']
+    requestedData["fast_response"] = ",".join(requestedData["fast_response"])
     serializer = QuestionlistSerializer(data=requestedData)
     if (serializer.is_valid()):
         serializer.save()
-        return JsonResponse(serializer.data, safe=False, status=status.HTTP_200_OK)
+        ques = list(Questionlist.objects.filter(
+            market_reg_num=market_reg_num).values())
+        for q in ques:
+            q["fast_response"] = q["fast_response"].split(",")
+        return JsonResponse(ques, safe=False, status=status.HTTP_200_OK)
     return JsonResponse("Failed to post new menu", safe=False, status=status.HTTP_400_BAD_REQUEST)
+
+
+def getQuesMadebyMarket(request, reg_num):
+    data = list(Questionlist.objects.filter(market_reg_num=reg_num).values())
+    for q in data:
+        q["fast_response"] = q["fast_response"].split(",")
+    return JsonResponse(data, safe=False, status=status.HTTP_200_OK)
 
 
 @csrf_exempt
