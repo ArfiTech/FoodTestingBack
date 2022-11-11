@@ -1,26 +1,24 @@
+from django.http import JsonResponse
 from django.shortcuts import render
 
-# Create your views here.
-from django.http import JsonResponse
-from django.shortcuts import render, redirect
-
-from .models import Customer, Market, Post, Questionlist, Review
 from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework.generics import ListAPIView
 from django.http.response import HttpResponse
-from .serializers import CustomerSerializer, MarketSerializer, PostSerializer, ReviewSerializer
+from .serializers import CustomerSerializer, MarketSerializer, PostSerializer, ReviewSerializer, QuesbymarketSerializer, QuestionlistSerializer
+from app.models import Customer, Market, Post, Questionlist, Review
 from rest_framework.viewsets import ModelViewSet
+from .models import Quesbymarket
 from rest_framework.pagination import PageNumberPagination
 from .pagination import MarketPagination, PostPageNumberPagination
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework.parsers import JSONParser
 from django.db import models
 from django.db.models.expressions import RawSQL
-
-from django.views.decorators.csrf import csrf_exempt
-from django.utils.decorators import method_decorator
+from django.core import serializers
+import json
+from datetime import datetime
 
 # foodTesting API
 
@@ -193,17 +191,61 @@ def get_locations_nearby_coords(latitude, longtitude, category, max_distance=Non
     return list(qs.values())
 
 
-# 사장님이 선택한 질문 보내기
-
-
-def getReviewQuestions(request, uuid):
+def getReviewQuestions(request, reg_num):
+    # 사장님이 선택한 질문 보내기
     ques_uuid = list(Quesbymarket.objects.filter(
-        market_reg_num=uuid).values('ques_uuid'))
+        market_reg_num=reg_num).values('ques_uuid'))
     questions = []
     for uuid in ques_uuid:
-        query_set = Questionlist.objects.filter(ques_uuid=uuid).values()
+        query_set = Questionlist.objects.filter(ques_uuid=uuid).first()
         questions.append(query_set)
     return JsonResponse(json.dumps(questions), safe=False, status=status.HTTP_200_OK)
+
+@api_view(['POST'])
+@csrf_exempt
+def registerQuestions(request):
+    # 사장님이 선택한 질문들 post
+    requestedData = JSONParser().parse(request)
+    for data in requestedData:
+        question = {
+            "market_reg_num": data["market_reg_num"],
+            "ques_uuid": data["ques_uuid"],
+            "order": data["order"]
+
+        }
+        serializer = QuesbymarketSerializer(data=question)
+        if (serializer.is_valid()):
+            serializer.save()
+        else:
+            return JsonResponse("Failed to register question", safe=False, status=status.HTTP_400_BAD_REQUEST)
+    return JsonResponse("Success to register questions by market", safe=False, status=status.HTTP_200_OK)
+
+# 사장님이 작성한 질문들 response
+
+@api_view(['POST'])
+@csrf_exempt
+def postReviewQuestions(request):
+    # 사장님이 작성한 질문 post
+    requestedData = JSONParser().parse(request)
+    market_reg_num = requestedData['market_reg_num']
+    requestedData["fast_response"] = ",".join(requestedData["fast_response"])
+    serializer = QuestionlistSerializer(data=requestedData)
+    if (serializer.is_valid()):
+        serializer.save()
+        ques = list(Questionlist.objects.filter(
+            market_reg_num=market_reg_num).values())
+        for q in ques:
+            q["fast_response"] = q["fast_response"].split(",")
+        return JsonResponse(ques, safe=False, status=status.HTTP_200_OK)
+    return JsonResponse("Failed to post new menu", safe=False, status=status.HTTP_400_BAD_REQUEST)
+
+
+def getQuesMadebyMarket(request, reg_num):
+    data = list(Questionlist.objects.filter(market_reg_num=reg_num).values())
+    for q in data:
+        q["fast_response"] = q["fast_response"].split(",")
+    return JsonResponse(data, safe=False, status=status.HTTP_200_OK)
+
 
 # 사용자가 작성한 리뷰 post
 
@@ -211,18 +253,25 @@ def getReviewQuestions(request, uuid):
 @api_view(['POST'])
 @csrf_exempt
 def postReviews(request):
+    # 사용자가 작성한 리뷰 post
     requestedData = JSONParser().parse(request)
-    review_uuid = requestedData['review_uuid']
-    writer_uuid = requestedData['writer_uuid']
-    market_reg_num = requestedData['market_reg_num']
-    review_date = requestedData['review_date']
-    answers = requestedData['answers']
+    for data in requestedData:
+        review_uuid = data["uuid"]
+        writer_uuid = data["writer_uuid"]
+        market_reg_num = data["RestaurantRegNumber"]
+        ques_uuid = data["query_uuid"]
+        review_date = data["post_date"]
+        review_line = data["contents"]
 
-    for answer in answers:
-        ques = answer[0]
-        ans = answer[1]
-        review = {'review_uuid': review_uuid, 'writer_uuid': writer_uuid, 'market_reg_num': market_reg_num,
-                  'ques_uuid': ques, 'review_line': ans, 'review_date': review_date}
+        review = {
+            'review_uuid': review_uuid,
+            'writer_uuid': writer_uuid,
+            'market_reg_num': market_reg_num,
+            'ques_uuid': ques_uuid,
+            'review_line': review_line,
+            'review_date': review_date
+        }
+
         serializer = ReviewSerializer(data=json.dumps(review))
         if (serializer.is_valid()):
             serializer.save()
@@ -230,6 +279,39 @@ def postReviews(request):
             return JsonResponse("Failed to register", safe=False, status=status.HTTP_400_BAD_REQUEST)
     return JsonResponse("Success to register", safe=False, status=status.HTTP_200_OK)
 
+
+def getReviewAnswers(request, reg_num):
+    # 사용자들이 작성한 리뷰 중 24시간 지난 리뷰만 return
+    customers = Review.objects.filter(
+        market_reg_num=reg_num).values('writer_uuid')
+    review_all = []
+    for customer in customers:
+        review_by_customer = Review.objects.filter(
+            market_reg_num=reg_num, writer_uuid=customer).values()
+        for review in review_by_customer:
+            question = Questionlist.objects.get(
+                ques_uuid=review["ques_uuid"]).contents
+            review_uuid = review["review_uuid"]
+            writer_uuid = review["writer_uuid"]
+            market_reg_num = review["market_reg_num"]
+            # ques_uuid=review["ques_uuid"]
+            review_line = review["review_line"]
+            review_date = review["review_date"]
+
+            now_time = int(datetime.now().strftime("%Y%m%d%H%M%s"))
+            if (now_time-review_date > 240000):
+                review_all.append(
+                    {
+                        "review_uuid": review_uuid,
+                        "writer_uuid": writer_uuid,
+                        "market_reg_num": market_reg_num,
+                        "question": question,
+                        "review_line": review_line,
+                        "review_date": review_date
+                    }
+                )
+
+    return JsonResponse(review_all, safe=False, status=status.HTTP_200_OK)
 # 매장, 음식 같이 나오게 - 1
 
 # review
@@ -238,3 +320,7 @@ def postReviews(request):
 # post/ register question - Questionlist
 # post/ fhinish choosing question - Quesbymarket
 # post/ post review - Review
+
+
+
+

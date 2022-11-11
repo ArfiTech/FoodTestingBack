@@ -23,5 +23,11 @@ urlpatterns = [
     path('delete/menu/<str:regnum>&<str:uuid>', views.delete_menu),
     re_path(r'^marketinfo/orderby/distance/(?P<category>\w+)/(?P<lat>\d+\.\d+)&(?P<lng>\d+\.\d+)$',
             views.get_marketInfo_orderBy_distance),
+    path('get/selected-questions/<str:reg_num>', views.getReviewQuestions),
+    path('register/selected-question', views.registerQuestions),
+    path('post/question/written-by-owner', views.postReviewQuestions),
+    path('get/question/written-by-owner/<str:reg_num>', views.getQuesMadebyMarket),
+    path('post/reviews', views.postReviews),
+    path('get/reviews/written-by-customer/<str:reg_num>', views.getReviewAnswers),
     #path('storeinfo/by-registartion-num/<str:regnum>', views.get_storeinfo),
 ]
