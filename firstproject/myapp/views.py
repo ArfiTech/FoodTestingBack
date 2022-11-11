@@ -278,12 +278,13 @@ def getReviewQuestions(request, reg_num):
 def registerQuestions(request):
     # 사장님이 선택한 질문들 post
     requestedData = JSONParser().parse(request)
+    if (requestedData and Quesbymarket.objects.exists(market_reg_num=requestedData[0]["market_reg_num"])):
+        return JsonResponse("already register questions", safe=False, status=status.HTTP_403_FORBIDDEN)
     for data in requestedData:
         question = {
             "market_reg_num": data["market_reg_num"],
             "ques_uuid": data["ques_uuid"],
             "order": data["order"]
-
         }
         serializer = QuesbymarketSerializer(data=question)
         if (serializer.is_valid()):
@@ -317,6 +318,12 @@ def getQuesMadebyMarket(request, reg_num):
     for q in data:
         q["fast_response"] = q["fast_response"].split(",")
     return JsonResponse(data, safe=False, status=status.HTTP_200_OK)
+
+
+def getDefaultQuestions(request, type):
+    questions = Questionlist.objects(ques_type=type).values()
+    return JsonResponse(questions, safe=False, status=status.HTTP_200_OK)
+# 추가
 
 
 @csrf_exempt
