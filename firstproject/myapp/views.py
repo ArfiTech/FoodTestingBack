@@ -36,7 +36,7 @@ def showData(request):
 # ListAPIView를 이용한 pagination/filter
 
 class PostViewSet(ListAPIView):
-    #queryset = NewTable.objects.all()
+    # queryset = NewTable.objects.all()
     serializer_class = TableSerializer
     pagination_class = PostPageNumberPagination
 
@@ -53,8 +53,8 @@ def get_api(request, id):
             data = list(NewTable.objects.filter(uuid=id))
             serializer = TableSerializer(data, many=True)
             return JsonResponse(serializer.data, safe=False, status=200)
-        #data = NewTable.objects.all()
-        #serialized_data = TableSerializer(data, many=True)
+        # data = NewTable.objects.all()
+        # serialized_data = TableSerializer(data, many=True)
         return HttpResponse("Not exists", status=404)
 
     elif request.method == 'POST':
@@ -265,11 +265,14 @@ def get_locations_nearby_coords(latitude, longtitude, category, max_distance=Non
 
 def getReviewQuestions(request, reg_num):
     # 사장님이 선택한 질문 보내기
-    ques_uuid = list(Quesbymarket.objects.filter(
-        market_reg_num=reg_num).values('ques_uuid'))
+    ques_list = list(Quesbymarket.objects.filter(
+        market_reg_num=reg_num).values('ques_uuid', 'order'))
     questions = []
-    for uuid in ques_uuid:
-        query_set = Questionlist.objects.filter(ques_uuid=uuid).first()
+    for ques in ques_list:
+        query_set = Questionlist.objects.filter(
+            ques_uuid=ques['ques_uuid']).first()
+        query_set["fast_response"] = query_set["fast_response"].split(",")
+        query_set["order"] = ques["order"]
         questions.append(query_set)
     return JsonResponse(json.dumps(questions), safe=False, status=status.HTTP_200_OK)
 
@@ -293,40 +296,30 @@ def registerQuestions(request):
             return JsonResponse("Failed to register question", safe=False, status=status.HTTP_400_BAD_REQUEST)
     return JsonResponse("Success to register questions by market", safe=False, status=status.HTTP_200_OK)
 
-# 사장님이 작성한 질문들 response
-
 
 @csrf_exempt
 def postReviewQuestions(request):
     # 사장님이 작성한 질문 post
     requestedData = JSONParser().parse(request)
-    market_reg_num = requestedData['market_reg_num']
+    requestedData["fast_response"] = list(
+        map(lambda x: x.strip(), requestedData["fast_response"]))
     requestedData["fast_response"] = ",".join(requestedData["fast_response"])
     serializer = QuestionlistSerializer(data=requestedData)
     if (serializer.is_valid()):
         serializer.save()
-        ques = list(Questionlist.objects.filter(
-            market_reg_num=market_reg_num).values())
-        for q in ques:
-            q["fast_response"] = q["fast_response"].split(",")
-        return JsonResponse(ques, safe=False, status=status.HTTP_200_OK)
+        return JsonResponse("Success to post", safe=False, status=status.HTTP_200_OK)
     return JsonResponse("Failed to post new menu", safe=False, status=status.HTTP_400_BAD_REQUEST)
 
 
-def getQuesMadebyMarket(request, reg_num):
-    data = list(Questionlist.objects.filter(market_reg_num=reg_num).values())
-    for q in data:
-        q["fast_response"] = q["fast_response"].split(",")
-    return JsonResponse(data, safe=False, status=status.HTTP_200_OK)
-
-
 def getDefaultQuestions(request, type):
-    questions = Questionlist.objects(ques_type=type).values()
+    questions = list(Questionlist.objects(ques_type=type).values())
+    for q in questions:
+        q["fast_response"] = q["fast_response"].split(",")
+        q["fast_response"] = list(map(lambda x: x.strip(), q["fast_response"]))
     return JsonResponse(questions, safe=False, status=status.HTTP_200_OK)
-# 추가
 
 
-@csrf_exempt
+@ csrf_exempt
 def postReviews(request):
     # 사용자가 작성한 리뷰 post
     requestedData = JSONParser().parse(request)
