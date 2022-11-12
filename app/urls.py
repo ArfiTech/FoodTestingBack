@@ -26,8 +26,9 @@ urlpatterns = [
     path('get/selected-questions/<str:reg_num>', views.getReviewQuestions),
     path('register/selected-question', views.registerQuestions),
     path('post/question/written-by-owner', views.postReviewQuestions),
-    path('get/question/written-by-owner/<str:reg_num>', views.getQuesMadebyMarket),
+    path('get/default/question/<int:type>', views.getDefaultQuestions),
+    # path('get/question/written-by-owner/<str:reg_num>', views.getQuesMadebyMarket),
     path('post/reviews', views.postReviews),
     path('get/reviews/written-by-customer/<str:reg_num>', views.getReviewAnswers),
-    #path('storeinfo/by-registartion-num/<str:regnum>', views.get_storeinfo),
+    # path('storeinfo/by-registartion-num/<str:regnum>', views.get_storeinfo),
 ]
