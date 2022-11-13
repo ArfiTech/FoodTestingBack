@@ -251,11 +251,14 @@ def getQuesMadebyMarket(request, reg_num):
 '''
 
 def getDefaultQuestions(request, type):
-    questions = list(Questionlist.objects(ques_type=type).values())
+    questions = list(Questionlist.objects.filter(ques_type=type).values())
     for q in questions:
+        if q["fast_response"] is None:
+            continue
         q["fast_response"] = q["fast_response"].split(",")
         q["fast_response"] = list(map(lambda x: x.strip(), q["fast_response"]))
     return JsonResponse(questions, safe=False, status=status.HTTP_200_OK)
+
 
 # 사용자가 작성한 리뷰 post
 
