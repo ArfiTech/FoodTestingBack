@@ -386,8 +386,12 @@ def getReviewAnswers(request, reg_num):
     return JsonResponse(review_all, safe=False, status=status.HTTP_200_OK)
 
 
+@ csrf_exempt
 def registerOverallQues(request):
     data = JSONParser().parse(request)
+    if (len(data) > 0):
+        if (Questionlist.objects.filter(market_reg_num=data[0]["market_reg_num"]).exists()):
+            return JsonResponse("already register overall questions", safe=False, status=status.HTTP_403_FORBIDDEN)
     for i in range(len(data)):
         if (data[i]["ques_type"] == 2):
             data[i]["fast_response"] = list(
