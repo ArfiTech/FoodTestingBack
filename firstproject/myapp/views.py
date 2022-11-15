@@ -169,12 +169,16 @@ def post_review(request):
 
 def getMarketInfoWithPost(request, regnum):
     marketInfo = list(Market.objects.filter(reg_num=regnum).values())
-    for data in marketInfo:
-        data["market_photo"] = "http://ec2-13-125-198-213.ap-northeast-2.compute.amazonaws.com:8000/img/"+data['market_photo']
-        postInfo = list(Post.objects.filter(write_market=regnum).values())
-    for post in postInfo:
-        post["menu_photo"] = "http://ec2-13-125-198-213.ap-northeast-2.compute.amazonaws.com:8000/img/"+post["menu_photo"]
-    return JsonResponse([{"market": marketInfo[0], "post": postInfo}], safe=False, status=status.HTTP_200_OK)
+    if (len(marketInfo) > 0):
+        for data in marketInfo:
+            data["market_photo"] = "http://ec2-13-125-198-213.ap-northeast-2.compute.amazonaws.com:8000/img/"+data['market_photo']
+            postInfo = list(Post.objects.filter(write_market=regnum).values())
+            for post in postInfo:
+                post["menu_photo"] = "http://ec2-13-125-198-213.ap-northeast-2.compute.amazonaws.com:8000/img/"+post["menu_photo"]
+        return JsonResponse([{"market": marketInfo[0], "post": postInfo}], safe=False, status=status.HTTP_200_OK)
+    else:
+        JsonResponse("Not exists store", safe=False,
+                     status=status.HTTP_400_BAD_REQUEST)
 
 
 def getMarketInfobyUUID(request, uuid):
