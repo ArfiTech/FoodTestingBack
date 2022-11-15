@@ -34,4 +34,5 @@ urlpatterns = [
     path('post/reviews', views.postReviews),
     path('get/reviews/written-by-customer/<str:reg_num>', views.getReviewAnswers),
     #path('storeinfo/by-registartion-num/<str:regnum>', views.get_storeinfo),
+    path('post/overall-selected-questions', views.registerOverallQues),
 ]

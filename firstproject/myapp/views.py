@@ -382,6 +382,37 @@ def getReviewAnswers(request, reg_num):
     return JsonResponse(review_all, safe=False, status=status.HTTP_200_OK)
 
 
+def registerOverallQues(request):
+    data = JSONParser().parse(request)
+    for i in range(len(data)):
+        if (data[i]["ques_type"] == 2):
+            data[i]["fast_response"] = list(
+                map(lambda x: x.strip(), data[i]["fast_response"]))
+            data[i]["fast_response"] = ",".join(data[i]["fast_response"])
+            question = {
+                "ques_uuid": data[i]["ques_uuid"],
+                "market_reg_num": data[i]["market_reg_num"],
+                "contents": data[i]["contents"],
+                "fast_response": data[i]["fast_response"],
+                "ques_type": data[i]["ques_type"],
+            }
+            serializer = QuestionlistSerializer(data=question)
+            if (serializer.is_valid()):
+                serializer.save()
+            else:
+                return JsonResponse("Failed to register custom question", safe=False, status=status.HTTP_406_NOT_ACCEPTABLE)
+        selected_ques = {
+            "market_reg_num": data[i]["market_reg_num"],
+            "ques_uuid": data[i]["ques_uuid"],
+            "order": i
+        }
+        selected_serializer = QuesbymarketSerializer(data=selected_ques)
+        if (selected_serializer.is_valid()):
+            selected_serializer.save()
+        else:
+            return JsonResponse("Failed to register selected question", safe=False, status=status.HTTP_406_NOT_ACCEPTABLE)
+    return JsonResponse("Success to register all selected questions", safe=False, status=status.HTTP_200_OK)
+
 # 매장, 음식 같이 나오게 - 1
 
 # review
