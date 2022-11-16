@@ -22,6 +22,7 @@ urlpatterns = [
     path('storeinfo/by-customer-id/<str:uuid>',
          views.getMarketInfobyUUID),
     path('storeinfo/<str:category>', views.getMarketInfobyCategory.as_view()),
+    path('register/store', views.register_marketInfo),
     path('modify/storeinfo', views.modify_marketInfo),
     path('post/new-menu', views.post_menu),
     path('delete/menu/<str:regnum>&<str:uuid>', views.delete_menu),

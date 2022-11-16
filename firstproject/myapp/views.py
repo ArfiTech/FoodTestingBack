@@ -206,9 +206,25 @@ class getMarketInfobyCategory(ListAPIView):
 
 
 @csrf_exempt
+def register_marketInfo(request):
+    table_data = JSONParser().parse(request)
+    if (Market.objects.filter(reg_num=table_data["reg_num"]).exists()):
+        return JsonResponse("already registered store", safe=False, status=status.HTTP_403_FORBIDDEN)
+    table_data["market_photo"] = "https://foodtesting-img.s3.ap-northeast-2.amazonaws.com/img/" + \
+        table_data["market_photo"]
+    serializer = MarketSerializer(data=table_data)
+    if (serializer.is_valid()):
+        serializer.save()
+        return JsonResponse("Register Sucessfully", safe=False, status=status.HTTP_200_OK)
+    return JsonResponse("Failed to register", safe=False, status=status.HTTP_400_BAD_REQUEST)
+
+
+@csrf_exempt
 def modify_marketInfo(request):
     table_data = JSONParser().parse(request)
     table = Market.objects.get(reg_num=table_data['reg_num'])
+    table["market_photo"] = "https://foodtesting-img.s3.ap-northeast-2.amazonaws.com/img/" + \
+        table["market_photo"]
     serializer = MarketSerializer(table, data=table_data)
     if (serializer.is_valid()):
         serializer.save()
