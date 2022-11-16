@@ -235,10 +235,12 @@ def modify_marketInfo(request):
 @csrf_exempt
 def post_menu(request):
     requestedData = JSONParser().parse(request)
+    requestedData["menu_photo"] = "https://foodtesting-img.s3.ap-northeast-2.amazonaws.com/img/" + \
+        requestedData["menu_photo"]
     serializer = PostSerializer(data=requestedData)
     if (serializer.is_valid()):
         serializer.save()
-        return JsonResponse(serializer.data, safe=False, status=status.HTTP_200_OK)
+        return JsonResponse("Success to post new menu", safe=False, status=status.HTTP_200_OK)
     return JsonResponse("Failed to post new menu", safe=False, status=status.HTTP_400_BAD_REQUEST)
 
 
