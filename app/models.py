@@ -94,3 +94,15 @@ class Review(models.Model):
     class Meta:
         managed = False
         db_table = 'review'
+
+
+
+class DropBox(models.Model):
+    title = models.CharField(editable=False,
+            max_length=36)
+    document = models.FileField(max_length=200)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        verbose_name_plural = 'Drop Boxes'

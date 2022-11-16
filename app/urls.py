@@ -1,9 +1,14 @@
 from django.contrib import admin
-from django.urls import path, re_path
+from django.urls import path, re_path, include
 # from .views import DataListAPI
 from django.conf import settings
 from django.conf.urls.static import static
 from app import views
+from rest_framework.routers import SimpleRouter
+from .views import DropBoxViewset
+
+router = SimpleRouter()
+router.register('accounts', DropBoxViewset, 'Drop Boxes')
 
 urlpatterns = [
     # foodTesting project API
@@ -18,6 +23,7 @@ urlpatterns = [
     path('storeinfo/by-customer-id/<str:uuid>',
          views.getMarketInfobyUUID),
     path('marketinfo/<str:category>', views.getMarketInfobyCategory.as_view()),
+    path('register/store', views.register_marketInfo),
     path('modify/storeinfo', views.modify_marketInfo),
     path('post/new-menu', views.post_menu),
     path('delete/menu/<str:regnum>&<str:uuid>', views.delete_menu),
@@ -31,4 +37,7 @@ urlpatterns = [
     path('post/reviews', views.postReviews),
     path('get/reviews/written-by-customer/<str:reg_num>', views.getReviewAnswers),
     # path('storeinfo/by-registartion-num/<str:regnum>', views.get_storeinfo),
+    path('post/overall-selected-questions', views.registerOverallQues),
+    path('', include(router.urls)),
+    path('post/img', views.postImg)
 ]

@@ -1,24 +1,46 @@
 from django.http import JsonResponse
 from django.shortcuts import render
 
-from rest_framework import status
+from rest_framework import status, viewsets
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework.generics import ListAPIView
 from django.http.response import HttpResponse
-from .serializers import CustomerSerializer, MarketSerializer, PostSerializer, ReviewSerializer, QuesbymarketSerializer, QuestionlistSerializer
-from app.models import Customer, Market, Post, Questionlist, Review
+from .serializers import CustomerSerializer, MarketSerializer, PostSerializer, ReviewSerializer, QuesbymarketSerializer, QuestionlistSerializer, DropBoxSerializer
+from app.models import Customer, Market, Post, Questionlist, Review, DropBox
 from rest_framework.viewsets import ModelViewSet
 from .models import Quesbymarket
 from rest_framework.pagination import PageNumberPagination
 from .pagination import MarketPagination, PostPageNumberPagination
 from django.views.decorators.csrf import csrf_exempt
-from rest_framework.parsers import JSONParser
+from rest_framework.parsers import JSONParser, MultiPartParser, FormParser
 from django.db import models
 from django.db.models.expressions import RawSQL
 from django.core import serializers
 import json
 from datetime import datetime
+import boto3, os, uuid
+
+# Build paths inside the project like this: os.path.join(BASE_DIR, ...)
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+print("base_dir: ", BASE_DIR)
+
+# Quick-start development settings - unsuitable for production
+# See https://docs.djangoproject.com/en/2.1/howto/deployment/checklist/
+
+# SECURITY WARNING: keep the secret key used in production secret!
+
+secret_file = os.path.join(BASE_DIR, 'secrets.json')
+
+with open(secret_file) as f:
+    secrets = json.loads(f.read())
+
+def get_secret(setting, secrets=secrets):
+    try:
+        return secrets[setting]
+    except KeyError:
+        error_msg = "Set the {} environment variable".format(setting)
+        raise ImproperlyConfigured(error_msg)
 
 # foodTesting API
 
@@ -77,28 +99,20 @@ def post_review(request):
 
 # getMarketInfobyRegNum + menu까지
 
+
 def getMarketInfoWithPost(request, regnum):
     marketInfo = list(Market.objects.filter(reg_num=regnum).values())
-    for data in marketInfo:
-        data["market_photo"] = "http://ec2-13-125-198-213.ap-northeast-2.compute.amazonaws.com:8000/img/"+data['market_photo']
-        postInfo = list(Post.objects.filter(write_market=regnum).values())
-    for post in postInfo:
-        post["menu_photo"] = "http://ec2-13-125-198-213.ap-northeast-2.compute.amazonaws.com:8000/img/"+post["menu_photo"]
-    return JsonResponse([{"market": marketInfo[0], "post": postInfo}], safe=False, status=status.HTTP_200_OK)
-
-'''
-class getMarketInfobyUUID(ListAPIView):
-    #queryset = Market.objects.all()
-    serializer_class = MarketSerializer
-    pagination_class = MarketPagination
-
-    def get_queryset(self):
-        id = self.kwargs['uuid']
-        marketInfo = list(Market.objects.filter(customer_uuid=id))
+    if (len(marketInfo) > 0):
         for data in marketInfo:
             data["market_photo"] = "http://ec2-13-125-198-213.ap-northeast-2.compute.amazonaws.com:8000/img/"+data['market_photo']
-        return JsonResponse(marketInfo, safe=False, status=status.HTTP_200_OK)
-'''
+            postInfo = list(Post.objects.filter(write_market=regnum).values())
+            for post in postInfo:
+                post["menu_photo"] = "http://ec2-13-125-198-213.ap-northeast-2.compute.amazonaws.com:8000/img/"+post["menu_photo"]
+        return JsonResponse([{"market": marketInfo[0], "post": postInfo}], safe=False, status=status.HTTP_200_OK)
+    else:
+        JsonResponse("Not exists store", safe=False,
+                     status=status.HTTP_400_BAD_REQUEST)
+
 
 def getMarketInfobyUUID(request, uuid):
 
@@ -112,13 +126,21 @@ def getMarketInfobyUUID(request, uuid):
         for post in postInfo:
             post["menu_photo"] = "http://ec2-13-125-198-213.ap-northeast-2.compute.amazonaws.com:8000/img/"+post["menu_photo"]
         result.append({"market": data, "post": postInfo})
-        '''
+    return JsonResponse(result, safe=False)
+
+
+def getMarketInfobyUUID(request, uuid):
+
+    marketInfo = list(Market.objects.filter(customer_uuid=uuid).values())
+    result = []
+    for data in marketInfo:
+        data["market_photo"] = "http://ec2-13-125-198-213.ap-northeast-2.compute.amazonaws.com:8000/img/" + \
+            data['market_photo']
         postInfo = list(Post.objects.filter(
-            writer_uuid=data['customer_uuid']).values())
+            write_market=data["reg_num"]).values())
         for post in postInfo:
             post["menu_photo"] = "http://ec2-13-125-198-213.ap-northeast-2.compute.amazonaws.com:8000/img/"+post["menu_photo"]
-            result.append({"market": marketInfo})
-        '''
+        result.append({"market": data, "post": postInfo})
     return JsonResponse(result, safe=False)
 
 class getMarketInfobyCategory(ListAPIView):
@@ -131,9 +153,25 @@ class getMarketInfobyCategory(ListAPIView):
 
 
 @csrf_exempt
+def register_marketInfo(request):
+    table_data = JSONParser().parse(request)
+    if (Market.objects.filter(reg_num=table_data["reg_num"]).exists()):
+        return JsonResponse("already registered store", safe=False, status=status.HTTP_403_FORBIDDEN)
+    table_data["market_photo"] = "https://foodtesting-img.s3.ap-northeast-2.amazonaws.com/img/" + \
+        table_data["market_photo"]
+    serializer = MarketSerializer(data=table_data)
+    if (serializer.is_valid()):
+        serializer.save()
+        return JsonResponse("Register Sucessfully", safe=False, status=status.HTTP_200_OK)
+    return JsonResponse("Failed to register", safe=False, status=status.HTTP_400_BAD_REQUEST)
+
+
+@csrf_exempt
 def modify_marketInfo(request):
     table_data = JSONParser().parse(request)
     table = Market.objects.get(reg_num=table_data['reg_num'])
+    table["market_photo"] = "https://foodtesting-img.s3.ap-northeast-2.amazonaws.com/img/" + \
+        table["market_photo"]
     serializer = MarketSerializer(table, data=table_data)
     if (serializer.is_valid()):
         serializer.save()
@@ -145,9 +183,12 @@ def modify_marketInfo(request):
 @csrf_exempt
 def post_menu(request):
     requestedData = JSONParser().parse(request)
+    requestedData["menu_photo"] = "https://foodtesting-img.s3.ap-northeast-2.amazonaws.com/img/" + \
+        requestedData["menu_photo"]
     serializer = PostSerializer(data=requestedData)
     if (serializer.is_valid()):
-        return JsonResponse(serializer.data, safe=False, status=status.HTTP_200_OK)
+        serializer.save()
+        return JsonResponse("Success to post new menu", safe=False, status=status.HTTP_200_OK)
     return JsonResponse("Failed to post new menu", safe=False, status=status.HTTP_400_BAD_REQUEST)
 
 
@@ -325,6 +366,67 @@ def getReviewAnswers(request, reg_num):
                 )
 
     return JsonResponse(review_all, safe=False, status=status.HTTP_200_OK)
+
+
+class DropBoxViewset(viewsets.ModelViewSet):
+
+    queryset = DropBox.objects.all()
+    serializer_class = DropBoxSerializer
+    parser_classes = [MultiPartParser, FormParser]
+    http_method_names = ['get', 'post', 'patch', 'delete']
+
+
+@api_view(['POST'])
+@csrf_exempt
+def postImg(request) :
+    try :
+        files = request.FILES.getlist('files')
+        s3r = boto3.resource('s3', aws_access_key_id= "AKIAZGG2FZJKGNNG35U2", aws_secret_access_key= get_secret("AWS_SECRET_ACCESS_KEY"))
+
+        for file in files :
+            file._set_name(str(uuid.uuid4()))
+            s3r.Bucket('foodtesting-img').put_object( Key='img'+'/%s'%(file), Body=file, ContentType='jpg')
+        return JsonResponse({"MESSAGE" : "%s"%(file)}, status=200)
+
+    except Exception as e :
+        return JsonResponse({"MESSAGE" : "FAIL"})
+
+
+@ csrf_exempt
+def registerOverallQues(request):
+    data = JSONParser().parse(request)
+    if (len(data) > 0):
+        if (Questionlist.objects.filter(market_reg_num=data[0]["market_reg_num"]).exists()):
+            return JsonResponse("already register overall questions", safe=False, status=status.HTTP_403_FORBIDDEN)
+    for i in range(len(data)):
+        if (data[i]["ques_type"] == 2):
+            data[i]["fast_response"] = list(
+                map(lambda x: x.strip(), data[i]["fast_response"]))
+            data[i]["fast_response"] = ",".join(data[i]["fast_response"])
+            question = {
+                "ques_uuid": data[i]["ques_uuid"],
+                "market_reg_num": data[i]["market_reg_num"],
+                "contents": data[i]["contents"],
+                "fast_response": data[i]["fast_response"],
+                "ques_type": data[i]["ques_type"],
+            }
+            serializer = QuestionlistSerializer(data=question)
+            if (serializer.is_valid()):
+                serializer.save()
+            else:
+                return JsonResponse("Failed to register custom question", safe=False, status=status.HTTP_406_NOT_ACCEPTABLE)
+        selected_ques = {
+            "market_reg_num": data[i]["market_reg_num"],
+            "ques_uuid": data[i]["ques_uuid"],
+            "order": i
+        }
+        selected_serializer = QuesbymarketSerializer(data=selected_ques)
+        if (selected_serializer.is_valid()):
+            selected_serializer.save()
+        else:
+            return JsonResponse("Failed to register selected question", safe=False, status=status.HTTP_406_NOT_ACCEPTABLE)
+    return JsonResponse("Success to register all selected questions", safe=False, status=status.HTTP_200_OK)
+
 # 매장, 음식 같이 나오게 - 1
 
 # review

@@ -23,6 +23,9 @@ urlpatterns = [
     path("admin/", admin.site.urls),
     path('', include('app.urls')),
     #path('api/product/', DataListAPI.as_view()),
+    path('api/', include('rest_framework.urls')),
 ]
 
-urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
