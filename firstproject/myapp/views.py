@@ -171,10 +171,11 @@ def getMarketInfoWithPost(request, regnum):
     marketInfo = list(Market.objects.filter(reg_num=regnum).values())
     if (len(marketInfo) > 0):
         for data in marketInfo:
-            data["market_photo"] = "http://ec2-13-125-198-213.ap-northeast-2.compute.amazonaws.com:8000/img/"+data['market_photo']
+            data["market_photo"] = "https://foodtesting-img.s3.ap-northeast-2.amazonaws.com/img/" + \
+                data['market_photo']
             postInfo = list(Post.objects.filter(write_market=regnum).values())
             for post in postInfo:
-                post["menu_photo"] = "http://ec2-13-125-198-213.ap-northeast-2.compute.amazonaws.com:8000/img/"+post["menu_photo"]
+                post["menu_photo"] = "https://foodtesting-img.s3.ap-northeast-2.amazonaws.com/img/"+post["menu_photo"]
         return JsonResponse([{"market": marketInfo[0], "post": postInfo}], safe=False, status=status.HTTP_200_OK)
     else:
         JsonResponse("Not exists store", safe=False,
@@ -186,12 +187,12 @@ def getMarketInfobyUUID(request, uuid):
     marketInfo = list(Market.objects.filter(customer_uuid=uuid).values())
     result = []
     for data in marketInfo:
-        data["market_photo"] = "http://ec2-13-125-198-213.ap-northeast-2.compute.amazonaws.com:8000/img/" + \
+        data["market_photo"] = "https://foodtesting-img.s3.ap-northeast-2.amazonaws.com/img/" + \
             data['market_photo']
         postInfo = list(Post.objects.filter(
             write_market=data["reg_num"]).values())
         for post in postInfo:
-            post["menu_photo"] = "http://ec2-13-125-198-213.ap-northeast-2.compute.amazonaws.com:8000/img/"+post["menu_photo"]
+            post["menu_photo"] = "https://foodtesting-img.s3.ap-northeast-2.amazonaws.com/img/"+post["menu_photo"]
         result.append({"market": data, "post": postInfo})
     return JsonResponse(result, safe=False)
 
@@ -210,12 +211,12 @@ def register_marketInfo(request):
     table_data = JSONParser().parse(request)
     if (Market.objects.filter(reg_num=table_data["reg_num"]).exists()):
         return JsonResponse("already registered store", safe=False, status=status.HTTP_403_FORBIDDEN)
-    table_data["market_photo"] = "https://foodtesting-img.s3.ap-northeast-2.amazonaws.com/img/" + \
-        table_data["market_photo"]
     serializer = MarketSerializer(data=table_data)
     if (serializer.is_valid()):
         serializer.save()
-        return JsonResponse("Register Sucessfully", safe=False, status=status.HTTP_200_OK)
+        serializer.data["market_photo"] = "https://foodtesting-img.s3.ap-northeast-2.amazonaws.com/img/" + \
+            serializer.data["market_photo"]
+        return JsonResponse(serializer.data, safe=False, status=status.HTTP_200_OK)
     return JsonResponse("Failed to register", safe=False, status=status.HTTP_400_BAD_REQUEST)
 
 
@@ -223,23 +224,24 @@ def register_marketInfo(request):
 def modify_marketInfo(request):
     table_data = JSONParser().parse(request)
     table = Market.objects.get(reg_num=table_data['reg_num'])
-    table["market_photo"] = "https://foodtesting-img.s3.ap-northeast-2.amazonaws.com/img/" + \
-        table["market_photo"]
     serializer = MarketSerializer(table, data=table_data)
     if (serializer.is_valid()):
         serializer.save()
-        return JsonResponse("Update Successfully", safe=False)
+        serializer.data["market_photo"] = "https://foodtesting-img.s3.ap-northeast-2.amazonaws.com/img/" + \
+            serializer.data["market_photo"]
+        return JsonResponse(serializer.data, safe=False)
     return JsonResponse("Failed to Update", safe=False)
 
 
 @csrf_exempt
 def post_menu(request):
     requestedData = JSONParser().parse(request)
-    requestedData["menu_photo"] = "https://foodtesting-img.s3.ap-northeast-2.amazonaws.com/img/" + \
-        requestedData["menu_photo"]
     serializer = PostSerializer(data=requestedData)
     if (serializer.is_valid()):
         serializer.save()
+        serializer.data["menu_photo"] = "https://foodtesting-img.s3.ap-northeast-2.amazonaws.com/img/" + \
+            serializer.data["menu_photo"]
+
         return JsonResponse("Success to post new menu", safe=False, status=status.HTTP_200_OK)
     return JsonResponse("Failed to post new menu", safe=False, status=status.HTTP_400_BAD_REQUEST)
 
@@ -257,7 +259,7 @@ def get_marketInfo_orderBy_distance(request, lat, lng, category):
     data = get_locations_nearby_coords(
         lat, lng, category)
     for d in data:
-        d["market_photo"] = "http://ec2-13-125-198-213.ap-northeast-2.compute.amazonaws.com:8000/img/"+d['market_photo']
+        d["market_photo"] = "https://foodtesting-img.s3.ap-northeast-2.amazonaws.com/img/"+d['market_photo']
         del d["distance"]
     return JsonResponse(data, safe=False)
 
