@@ -173,9 +173,12 @@ def getMarketInfoWithPost(request, regnum):
         for data in marketInfo:
             data["market_photo"] = "https://foodtesting-img.s3.ap-northeast-2.amazonaws.com/img/" + \
                 data['market_photo']
+            data['customer_uuid'] = data.pop('customer_uuid_id')
             postInfo = list(Post.objects.filter(write_market=regnum).values())
             for post in postInfo:
                 post["menu_photo"] = "https://foodtesting-img.s3.ap-northeast-2.amazonaws.com/img/"+post["menu_photo"]
+                post['write_market'] = post.pop('write_market_id')
+                post['writer_uuid'] = post.pop('writer_uuid_id')
         return JsonResponse([{"market": marketInfo[0], "post": postInfo}], safe=False, status=status.HTTP_200_OK)
     else:
         JsonResponse("Not exists store", safe=False,
