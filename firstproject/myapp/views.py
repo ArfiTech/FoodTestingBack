@@ -214,13 +214,11 @@ def register_marketInfo(request):
     table_data = JSONParser().parse(request)
     if (Market.objects.filter(reg_num=table_data["reg_num"]).exists()):
         return JsonResponse("already registered store", safe=False, status=status.HTTP_403_FORBIDDEN)
-    table_data['customer_uuid_id'] = table_data.pop('customer_uuid')
     serializer = MarketSerializer(data=table_data)
     if (serializer.is_valid()):
         serializer.save()
         serializer.data["market_photo"] = "https://foodtesting-img.s3.ap-northeast-2.amazonaws.com/img/" + \
             serializer.data["market_photo"]
-        serializer.data['customer_uuid']=serializer.pop('customer_uuid_id')
         return JsonResponse(serializer.data, safe=False, status=status.HTTP_200_OK)
     return JsonResponse("Failed to register", safe=False, status=status.HTTP_400_BAD_REQUEST)
 

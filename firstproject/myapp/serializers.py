@@ -36,6 +36,12 @@ class MarketSerializer(serializers.ModelSerializer):
         model = Market
         fields = '__all__'
 
+    def to_representation(self, instance):
+        response = super().to_representation(instance)
+        response['customer_uuid'] = MarketSerializer(
+            instance.customer_uuid).data
+        return response
+
 
 class PostSerializer(serializers.ModelSerializer):
     class Meta:
