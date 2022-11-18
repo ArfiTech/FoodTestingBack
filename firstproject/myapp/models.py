@@ -35,7 +35,7 @@ class Market(models.Model):
     start_date = models.BigIntegerField()
     period = models.BigIntegerField()
     customer_uuid = models.ForeignKey(
-        Customer, on_delete=models.CASCADE, db_column='customer_uuid')
+        Customer, on_delete=models.CASCADE, db_column='uuid')
     location = models.CharField(max_length=200)
     latitude = models.FloatField()
     longtitude = models.FloatField()

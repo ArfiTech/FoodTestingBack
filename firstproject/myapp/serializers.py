@@ -45,13 +45,13 @@ class PostSerializer(serializers.ModelSerializer):
 class QuesbymarketSerializer(serializers.ModelSerializer):
     class Meta:
         model = Quesbymarket
-        field = '__all__'
+        fields = '__all__'
 
 
 class QuestionlistSerializer(serializers.ModelSerializer):
     class Meta:
         model = Questionlist
-        field = '__all__'
+        fields = '__all__'
 
 
 '''
