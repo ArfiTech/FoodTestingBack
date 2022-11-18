@@ -17,7 +17,6 @@ class TableSerializer(serializers.ModelSerializer):
 
 
 class CustomerSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = Customer
         fields = '__all__'
@@ -31,7 +30,6 @@ class ReviewSerializer(serializers.ModelSerializer):
 
 
 class MarketSerializer(serializers.ModelSerializer):
-    customer = CustomerSerializer(many=True, read_only=True)
 
     class Meta:
         model = Market
