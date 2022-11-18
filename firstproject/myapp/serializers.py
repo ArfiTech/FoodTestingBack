@@ -31,16 +31,11 @@ class ReviewSerializer(serializers.ModelSerializer):
 
 
 class MarketSerializer(serializers.ModelSerializer):
+    customer = CustomerSerializer(many=True, read_only=True)
 
     class Meta:
         model = Market
         fields = '__all__'
-
-    def to_representation(self, instance):
-        response = super().to_representation(instance)
-        response['customer_uuid'] = MarketSerializer(
-            instance.customer_uuid).data
-        return response
 
 
 class PostSerializer(serializers.ModelSerializer):
