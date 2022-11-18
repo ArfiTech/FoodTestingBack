@@ -327,14 +327,15 @@ def registerQuestions(request):
 @csrf_exempt
 def postReviewQuestions(request):
     # 사장님이 작성한 질문 post
-    requestedData = JSONParser().parse(request)["ques"][0]
-    requestedData["fast_response"] = list(
-        map(lambda x: x.strip(), requestedData["fast_response"]))
-    requestedData["fast_response"] = ",".join(requestedData["fast_response"])
-    serializer = QuestionlistSerializer(data=requestedData)
-    if (serializer.is_valid()):
-        serializer.save()
-        return JsonResponse("Success to post", safe=False, status=status.HTTP_200_OK)
+    requestedData = JSONParser().parse(request)["ques"]
+    for data in requestedData:
+        data["fast_response"] = list(
+            map(lambda x: x.strip(), data["fast_response"]))
+        data["fast_response"] = ",".join(data["fast_response"])
+        serializer = QuestionlistSerializer(data=data)
+        if (serializer.is_valid()):
+            serializer.save()
+            return JsonResponse("Success to post", safe=False, status=status.HTTP_200_OK)
     return JsonResponse("Failed to post new menu", safe=False, status=status.HTTP_400_BAD_REQUEST)
 
 
@@ -411,7 +412,7 @@ def getReviewAnswers(request, reg_num):
 
 @ csrf_exempt
 def registerOverallQues(request):
-    data = JSONParser().parse(request)
+    data = JSONParser().parse(request)["ques"]
     if (len(data) > 0):
         if (Questionlist.objects.filter(market_reg_num=data[0]["market_reg_num"]).exists()):
             return JsonResponse("already register overall questions", safe=False, status=status.HTTP_403_FORBIDDEN)
