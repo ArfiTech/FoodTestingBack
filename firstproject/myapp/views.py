@@ -327,7 +327,7 @@ def registerQuestions(request):
 @csrf_exempt
 def postReviewQuestions(request):
     # 사장님이 작성한 질문 post
-    requestedData = JSONParser().parse(request)
+    requestedData = JSONParser().parse(request)["ques"]
     requestedData["fast_response"] = list(
         map(lambda x: x.strip(), requestedData["fast_response"]))
     requestedData["fast_response"] = ",".join(requestedData["fast_response"])
