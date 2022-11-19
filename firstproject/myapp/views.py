@@ -429,6 +429,7 @@ def registerOverallQues(request):
                 "ques_type": data[i]["ques_type"],
             }
             serializer = QuestionlistSerializer(data=question)
+            print(repr(serializer))
             if (serializer.is_valid()):
                 serializer.save()
             else:
