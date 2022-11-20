@@ -20,7 +20,7 @@ from django.db import models
 from django.db.models.expressions import RawSQL
 from django.core import serializers
 import json
-from datetime import datetime
+import time
 # Create your views here.
 
 
@@ -378,34 +378,34 @@ def postReviews(request):
 
 def getReviewAnswers(request, reg_num):
     # 사용자들이 작성한 리뷰 중 24시간 지난 리뷰만 return
-    customers = Review.objects.filter(
-        market_reg_num=reg_num).values('writer_uuid')
+    customers = list(Review.objects.filter(
+        market_reg_num=reg_num).values('writer_uuid'))
+    customers = list(set(customers))
     review_all = []
     for customer in customers:
         review_by_customer = Review.objects.filter(
             market_reg_num=reg_num, writer_uuid=customer).values()
+        ques_and_ans = {"customer": customer,
+                        "market_reg_num": reg_num, "answer": []}
         for review in review_by_customer:
-            question = Questionlist.objects.get(
+            question_content = Questionlist.objects.get(
                 ques_uuid=review["ques_uuid"]).contents
-            review_uuid = review["review_uuid"]
-            writer_uuid = review["writer_uuid"]
-            market_reg_num = review["market_reg_num"]
-            # ques_uuid=review["ques_uuid"]
-            review_line = review["review_line"]
+            ques_type = Questionlist.objects.get(
+                ques_uuid=review["ques_uuid"]).ques_type
             review_date = review["review_date"]
-
-            now_time = int(datetime.now().strftime("%Y%m%d%H%M%s"))
-            if (now_time-review_date > 240000):
-                review_all.append(
+            if ((int(time.time())-review_date)/60*60*24 > 24):
+                ques_and_ans["answer"].append(
                     {
-                        "review_uuid": review_uuid,
-                        "writer_uuid": writer_uuid,
-                        "market_reg_num": market_reg_num,
-                        "question": question,
-                        "review_line": review_line,
+                        "ques_uuid": review["ques_uuid"],
+                        "ques_type": ques_type
+                        "review_uuid": review["review_uuid"],
+                        "contents": question_content,
+                        "review_line": review["review_line"],
                         "review_date": review_date
                     }
                 )
+            if (ques_and_ans["answer"]):
+                review_all.append(ques_and_ans)
 
     return JsonResponse(review_all, safe=False, status=status.HTTP_200_OK)
 
