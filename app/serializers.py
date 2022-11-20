@@ -23,6 +23,7 @@ class ReviewSerializer(serializers.ModelSerializer):
 
 
 class MarketSerializer(serializers.ModelSerializer):
+    #customer = CustomerSerializer(many=True, read_only=True)
 
     class Meta:
         model = Market
@@ -38,13 +39,13 @@ class PostSerializer(serializers.ModelSerializer):
 class QuesbymarketSerializer(serializers.ModelSerializer):
     class Meta:
         model = Quesbymarket
-        field = '__all__'
+        fields = '__all__'
 
 
 class QuestionlistSerializer(serializers.ModelSerializer):
     class Meta:
         model = Questionlist
-        field = '__all__'
+        fields = '__all__'
 
 class DropBoxSerializer(serializers.ModelSerializer):
  

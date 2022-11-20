@@ -20,10 +20,11 @@ class Customer(models.Model):
 class Market(models.Model):
     reg_num = models.CharField(primary_key=True, max_length=12)
     name = models.CharField(max_length=20)
-    market_photo = models.ImageField(upload_to="img")
+    #market_photo = models.ImageField(upload_to="img")
+    market_photo = models.CharField(max_length=255)
     start_date = models.BigIntegerField()
     period = models.BigIntegerField()
-    customer_uuid = models.ForeignKey(Customer, models.DO_NOTHING, db_column='customer_uuid')
+    customer_uuid = models.ForeignKey(Customer, related_name='customer', on_delete=models.CASCADE, db_column='customer_uuid', to_field='uuid')
     location = models.CharField(max_length=200)
     street_loc = models.CharField(max_length=200, blank=True, null=True)
     latitude = models.FloatField()
@@ -62,8 +63,9 @@ class Post(models.Model):
 
 
 class Quesbymarket(models.Model):
-    market_reg_num = models.OneToOneField(Market, models.DO_NOTHING, db_column='market_reg_num', primary_key=True)
-    ques_uuid = models.ForeignKey('Questionlist', models.DO_NOTHING, db_column='ques_uuid', blank=True, null=True)
+    uuid = models.CharField(primary_key=True, max_length=36)
+    market_reg_num = models.CharField(max_length=12)
+    ques_uuid = models.CharField(max_length=36)
     order = models.IntegerField(blank=True, null=True)
 
     class Meta:
@@ -73,7 +75,7 @@ class Quesbymarket(models.Model):
 
 class Questionlist(models.Model):
     ques_uuid = models.CharField(primary_key=True, max_length=36)
-    market_reg_num = models.ForeignKey(Market, models.DO_NOTHING, db_column='market_reg_num', blank=True, null=True)
+    market_reg_num = models.ForeignKey(Market, models.DO_NOTHING, db_column='market_reg_num', blank=True, null=True, to_field='reg_num')
     contents = models.CharField(max_length=200)
     fast_response = models.CharField(max_length=200, blank=True, null=True)
     ques_type = models.IntegerField(blank=True, null=True)

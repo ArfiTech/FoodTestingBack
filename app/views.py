@@ -73,7 +73,7 @@ def modify_userinfo(request):
     return JsonResponse("Failed to Update", safe=False, status=status.HTTP_400_BAD_REQUEST)
 
 
-@api_view(['POST'])
+#@api_view(['POST'])
 @csrf_exempt
 def register_userinfo(request):
     requestedData = JSONParser().parse(request)
@@ -86,7 +86,7 @@ def register_userinfo(request):
     return JsonResponse("Failed to Add", safe=False, status=status.HTTP_404_NOT_FOUND)
 
 
-@api_view(['POST'])
+#@api_view(['POST'])
 @csrf_exempt
 def post_review(request):
     requestedData = JSONParser().parse(request)
@@ -105,9 +105,12 @@ def getMarketInfoWithPost(request, regnum):
         for data in marketInfo:
             data["market_photo"] = "https://foodtesting-img.s3.ap-northeast-2.amazonaws.com/img/" + \
                 data['market_photo']
+            data['customer_uuid'] = data.pop('customer_uuid_id')
             postInfo = list(Post.objects.filter(write_market=regnum).values())
             for post in postInfo:
                 post["menu_photo"] = "https://foodtesting-img.s3.ap-northeast-2.amazonaws.com/img/"+post["menu_photo"]
+                post['write_market'] = post.pop('write_market_id')
+                post['writer_uuid'] = post.pop('writer_uuid_id')
         return JsonResponse([{"market": marketInfo[0], "post": postInfo}], safe=False, status=status.HTTP_200_OK)
     else:
         JsonResponse("Not exists store", safe=False,
@@ -138,18 +141,20 @@ class getMarketInfobyCategory(ListAPIView):
         return Market.objects.filter(category=category)
 
 
+#@api_view(['POST'])
 @csrf_exempt
 def register_marketInfo(request):
     table_data = JSONParser().parse(request)
+    print(table_data)
     if (Market.objects.filter(reg_num=table_data["reg_num"]).exists()):
         return JsonResponse("already registered store", safe=False, status=status.HTTP_403_FORBIDDEN)
     serializer = MarketSerializer(data=table_data)
-    if (serializer.is_valid()):
+    if (serializer.is_valid(raise_exception=True)):
         serializer.save()
         serializer.data["market_photo"] = "https://foodtesting-img.s3.ap-northeast-2.amazonaws.com/img/" + \
             serializer.data["market_photo"]
         return JsonResponse(serializer.data, safe=False, status=status.HTTP_200_OK)
-    return JsonResponse("Failed to register", safe=False, status=status.HTTP_400_BAD_REQUEST)
+    return JsonResponse(e.message, safe=False, status=status.HTTP_400_BAD_REQUEST)
 
 
 @csrf_exempt
@@ -165,7 +170,7 @@ def modify_marketInfo(request):
     return JsonResponse("Failed to Update", safe=False)
 
 
-@api_view(['POST'])
+#@api_view(['POST'])
 @csrf_exempt
 def post_menu(request):
     requestedData = JSONParser().parse(request)
@@ -233,7 +238,7 @@ def getReviewQuestions(request, reg_num):
     return JsonResponse(json.dumps(questions), safe=False, status=status.HTTP_200_OK)
 
 
-@api_view(['POST'])
+#@api_view(['POST'])
 @csrf_exempt
 def registerQuestions(request):
     # 사장님이 선택한 질문들 post
@@ -255,12 +260,11 @@ def registerQuestions(request):
 
 
 # 사장님이 작성한 질문들 response
-
-@api_view(['POST'])
+#@api_view(['POST'])
 @csrf_exempt
 def postReviewQuestions(request):
     # 사장님이 작성한 질문 post
-    requestedData = JSONParser().parse(request)
+    requestedData = JSONParser().parse(request)["ques"][0]
     requestedData["fast_response"] = list(
         map(lambda x: x.strip(), requestedData["fast_response"]))
     requestedData["fast_response"] = ",".join(requestedData["fast_response"])
@@ -269,6 +273,7 @@ def postReviewQuestions(request):
         serializer.save()
         return JsonResponse("Success to post", safe=False, status=status.HTTP_200_OK)
     return JsonResponse("Failed to post new menu", safe=False, status=status.HTTP_400_BAD_REQUEST)
+
 
 '''
 def getQuesMadebyMarket(request, reg_num):
@@ -291,7 +296,7 @@ def getDefaultQuestions(request, type):
 # 사용자가 작성한 리뷰 post
 
 
-@api_view(['POST'])
+#@api_view(['POST'])
 @csrf_exempt
 def postReviews(request):
     # 사용자가 작성한 리뷰 post
@@ -323,34 +328,34 @@ def postReviews(request):
 
 def getReviewAnswers(request, reg_num):
     # 사용자들이 작성한 리뷰 중 24시간 지난 리뷰만 return
-    customers = Review.objects.filter(
-        market_reg_num=reg_num).values('writer_uuid')
+    customers = list(Review.objects.filter(
+        market_reg_num=reg_num).values('writer_uuid'))
+    customers = list(set(customers))
     review_all = []
     for customer in customers:
         review_by_customer = Review.objects.filter(
             market_reg_num=reg_num, writer_uuid=customer).values()
+        ques_and_ans = {"customer": customer,
+                        "market_reg_num": reg_num, "answer": []}
         for review in review_by_customer:
-            question = Questionlist.objects.get(
+            question_content = Questionlist.objects.get(
                 ques_uuid=review["ques_uuid"]).contents
-            review_uuid = review["review_uuid"]
-            writer_uuid = review["writer_uuid"]
-            market_reg_num = review["market_reg_num"]
-            # ques_uuid=review["ques_uuid"]
-            review_line = review["review_line"]
+            ques_type = Questionlist.objects.get(
+                ques_uuid=review["ques_uuid"]).ques_type
             review_date = review["review_date"]
-
-            now_time = int(datetime.now().strftime("%Y%m%d%H%M%s"))
-            if (now_time-review_date > 240000):
-                review_all.append(
+            if ((int(time.time())-review_date)/60*60*24 > 24):
+                ques_and_ans["answer"].append(
                     {
-                        "review_uuid": review_uuid,
-                        "writer_uuid": writer_uuid,
-                        "market_reg_num": market_reg_num,
-                        "question": question,
-                        "review_line": review_line,
+                        "ques_uuid": review["ques_uuid"],
+                        "ques_type": ques_type,
+                        "review_uuid": review["review_uuid"],
+                        "contents": question_content,
+                        "review_line": review["review_line"],
                         "review_date": review_date
                     }
                 )
+            if (ques_and_ans["answer"]):
+                review_all.append(ques_and_ans)
 
     return JsonResponse(review_all, safe=False, status=status.HTTP_200_OK)
 
@@ -363,7 +368,7 @@ class DropBoxViewset(viewsets.ModelViewSet):
     http_method_names = ['get', 'post', 'patch', 'delete']
 
 
-@api_view(['POST'])
+#@api_view(['POST'])
 @csrf_exempt
 def postImg(request) :
     try :
@@ -378,10 +383,10 @@ def postImg(request) :
     except Exception as e :
         return JsonResponse({"MESSAGE" : "FAIL"})
 
-
-@ csrf_exempt
+#@api_view(['POST'])
+@csrf_exempt
 def registerOverallQues(request):
-    data = JSONParser().parse(request)
+    data = JSONParser().parse(request)["ques"]
     if (len(data) > 0):
         if (Questionlist.objects.filter(market_reg_num=data[0]["market_reg_num"]).exists()):
             return JsonResponse("already register overall questions", safe=False, status=status.HTTP_403_FORBIDDEN)
@@ -398,20 +403,23 @@ def registerOverallQues(request):
                 "ques_type": data[i]["ques_type"],
             }
             serializer = QuestionlistSerializer(data=question)
-            if (serializer.is_valid()):
+            print(repr(serializer))
+            if (serializer.is_valid(raise_exception=True)):
                 serializer.save()
             else:
                 return JsonResponse("Failed to register custom question", safe=False, status=status.HTTP_406_NOT_ACCEPTABLE)
         selected_ques = {
+            "uuid": str(uuid.uuid4()),
             "market_reg_num": data[i]["market_reg_num"],
             "ques_uuid": data[i]["ques_uuid"],
             "order": i
         }
         selected_serializer = QuesbymarketSerializer(data=selected_ques)
-        if (selected_serializer.is_valid()):
+        if (selected_serializer.is_valid(raise_exception=True)):
             selected_serializer.save()
         else:
-            return JsonResponse("Failed to register selected question", safe=False, status=status.HTTP_406_NOT_ACCEPTABLE)
+            #return JsonResponse("Failed to register selected question", safe=False, status=status.HTTP_406_NOT_ACCEPTABLE)
+            return JsonResponse(e.message, safe=False, status=status.HTTP_406_NOT_ACCEPTABLE)
     return JsonResponse("Success to register all selected questions", safe=False, status=status.HTTP_200_OK)
 
 # 매장, 음식 같이 나오게 - 1
