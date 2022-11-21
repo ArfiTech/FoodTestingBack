@@ -289,11 +289,11 @@ def getReviewQuestions(request, reg_num):
     # 사장님이 선택한 질문 보내기
     ques_list = list(Quesbymarket.objects.filter(
         market_reg_num=reg_num).values('ques_uuid', 'order'))
-    ques_list = sorted(ques_list, lambda x: x["order"])
+    ques_list = sorted(ques_list, lambda x: x.order)
     questions = []
     for ques in ques_list:
-        query_set = Questionlist.objects.filter(
-            ques_uuid=ques('ques_uuid')).first()
+        query_set = list(Questionlist.objects.filter(
+            ques_uuid=ques('ques_uuid')).values())[0]
         query_set["fast_response"] = query_set["fast_response"].split(",")
         query_set["order"] = ques["order"]
         questions.append(json.dumps(query_set))
