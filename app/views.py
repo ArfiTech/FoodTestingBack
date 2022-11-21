@@ -113,7 +113,7 @@ def getMarketInfoWithPost(request, regnum):
                 post['writer_uuid'] = post.pop('writer_uuid_id')
         return JsonResponse([{"market": marketInfo[0], "post": postInfo}], safe=False, status=status.HTTP_200_OK)
     else:
-        JsonResponse("Not exists store", safe=False,
+        JsonResponse({"MESSAGE": "Not exists store"}, safe=False,
                      status=status.HTTP_400_BAD_REQUEST)
 
 
@@ -145,16 +145,13 @@ class getMarketInfobyCategory(ListAPIView):
 @csrf_exempt
 def register_marketInfo(request):
     table_data = JSONParser().parse(request)
-    print(table_data)
     if (Market.objects.filter(reg_num=table_data["reg_num"]).exists()):
-        return JsonResponse("already registered store", safe=False, status=status.HTTP_403_FORBIDDEN)
+        return JsonResponse({"MESSAGE": "already registered store"}, safe=False, status=status.HTTP_403_FORBIDDEN)
     serializer = MarketSerializer(data=table_data)
-    if (serializer.is_valid(raise_exception=True)):
+    if (serializer.is_valid()):
         serializer.save()
-        serializer.data["market_photo"] = "https://foodtesting-img.s3.ap-northeast-2.amazonaws.com/img/" + \
-            serializer.data["market_photo"]
         return JsonResponse(serializer.data, safe=False, status=status.HTTP_200_OK)
-    return JsonResponse(e.message, safe=False, status=status.HTTP_400_BAD_REQUEST)
+    return JsonResponse({"MESSAGE": "Failed to register"}, safe=False, status=status.HTTP_400_BAD_REQUEST)
 
 
 @csrf_exempt
@@ -164,10 +161,8 @@ def modify_marketInfo(request):
     serializer = MarketSerializer(table, data=table_data)
     if (serializer.is_valid()):
         serializer.save()
-        serializer.data["market_photo"] = "https://foodtesting-img.s3.ap-northeast-2.amazonaws.com/img/" + \
-            serializer.data["market_photo"]
         return JsonResponse(serializer.data, safe=False)
-    return JsonResponse("Failed to Update", safe=False)
+    return JsonResponse({"MESSAGE": "Failed to Update"}, safe=False)
 
 
 #@api_view(['POST'])
@@ -177,19 +172,16 @@ def post_menu(request):
     serializer = PostSerializer(data=requestedData)
     if (serializer.is_valid()):
         serializer.save()
-        serializer.data["menu_photo"] = "https://foodtesting-img.s3.ap-northeast-2.amazonaws.com/img/" + \
-            serializer.data["menu_photo"]
-
-        return JsonResponse("Success to post new menu", safe=False, status=status.HTTP_200_OK)
-    return JsonResponse("Failed to post new menu", safe=False, status=status.HTTP_400_BAD_REQUEST)
+        return JsonResponse({"MESSAGE": "Success to post new menu"}, safe=False, status=status.HTTP_200_OK)
+    return JsonResponse({"MESSAGE": "Failed to post new menu"}, safe=False, status=status.HTTP_400_BAD_REQUEST)
 
 
 def delete_menu(request, regnum, uuid):
     if (Post.objects.filter(write_market=regnum, post_uuid=uuid).exists()):
         deletedData = Post.objects.get(write_market=regnum, post_uuid=uuid)
         deletedData.delete()
-        return JsonResponse("Delete Successfully", safe=False)
-    return JsonResponse("Failed to delete", safe=False)
+        return JsonResponse({"MESSAGE": "Delete Successfully"}, safe=False)
+    return JsonResponse({"MESSAGE": "Failed to delete"}, safe=False)
 
 
 def get_marketInfo_orderBy_distance(request, lat, lng, category):
@@ -234,8 +226,8 @@ def getReviewQuestions(request, reg_num):
             ques_uuid=ques['ques_uuid']).first()
         query_set["fast_response"] = query_set["fast_response"].split(",")
         query_set["order"] = ques["order"]
-        questions.append(query_set)
-    return JsonResponse(json.dumps(questions), safe=False, status=status.HTTP_200_OK)
+        questions.append(json.dumps(query_set))
+    return JsonResponse({"ques": questions}, safe=False, status=status.HTTP_200_OK)
 
 
 #@api_view(['POST'])
@@ -322,8 +314,8 @@ def postReviews(request):
         if (serializer.is_valid()):
             serializer.save()
         else:
-            return JsonResponse("Failed to register", safe=False, status=status.HTTP_400_BAD_REQUEST)
-    return JsonResponse("Success to register", safe=False, status=status.HTTP_200_OK)
+            return JsonResponse({"MESSAGE": "Failed to register"}, safe=False, status=status.HTTP_400_BAD_REQUEST)
+    return JsonResponse({"MESSAGE": "Success to register"}, safe=False, status=status.HTTP_200_OK)
 
 
 def getReviewAnswers(request, reg_num):
@@ -404,23 +396,22 @@ def registerOverallQues(request):
             }
             serializer = QuestionlistSerializer(data=question)
             print(repr(serializer))
-            if (serializer.is_valid(raise_exception=True)):
+            if (serializer.is_valid()):
                 serializer.save()
             else:
-                return JsonResponse("Failed to register custom question", safe=False, status=status.HTTP_406_NOT_ACCEPTABLE)
+                return JsonResponse({"MESSAGE": "Failed to register custom question"}, safe=False, status=status.HTTP_406_NOT_ACCEPTABLE)
         selected_ques = {
-            "uuid": str(uuid.uuid4()),
             "market_reg_num": data[i]["market_reg_num"],
             "ques_uuid": data[i]["ques_uuid"],
             "order": i
         }
         selected_serializer = QuesbymarketSerializer(data=selected_ques)
-        if (selected_serializer.is_valid(raise_exception=True)):
+        if (selected_serializer.is_valid()):
             selected_serializer.save()
         else:
-            #return JsonResponse("Failed to register selected question", safe=False, status=status.HTTP_406_NOT_ACCEPTABLE)
-            return JsonResponse(e.message, safe=False, status=status.HTTP_406_NOT_ACCEPTABLE)
-    return JsonResponse("Success to register all selected questions", safe=False, status=status.HTTP_200_OK)
+            return JsonResponse({"MESSAGE": "Failed to register selected question"}, safe=False, status=status.HTTP_406_NOT_ACCEPTABLE)
+    return JsonResponse({"MESSAGE": "Success to register all selected questions"}, safe=False, status=status.HTTP_200_OK)
+
 
 # 매장, 음식 같이 나오게 - 1
 
