@@ -289,10 +289,11 @@ def getReviewQuestions(request, reg_num):
     # 사장님이 선택한 질문 보내기
     ques_list = list(Quesbymarket.objects.filter(
         market_reg_num=reg_num).values('ques_uuid', 'order'))
+    ques_list = sorted(ques_list, lambda x: x["order"])
     questions = []
     for ques in ques_list:
         query_set = Questionlist.objects.filter(
-            ques_uuid=ques['ques_uuid']).first()
+            ques_uuid=ques('ques_uuid')).first()
         query_set["fast_response"] = query_set["fast_response"].split(",")
         query_set["order"] = ques["order"]
         questions.append(json.dumps(query_set))
@@ -387,23 +388,23 @@ def getReviewAnswers(request, reg_num):
         for review in review_by_customer:
             question_content = Questionlist.objects.get(
                 ques_uuid=review["ques_uuid"]).contents
-            ques_type = Questionlist.objects.get(
-                ques_uuid=review["ques_uuid"]).ques_type
+            question_order = Quesbymarket.objects.get(
+                market_reg_num=reg_num, ques_uuid=review["ques_uuid"]).order
             review_date = review["review_date"]
             if ((int(time.time())-review_date)/60*60*24 > 24):
                 ques_and_ans["answer"].append(
                     {
                         "ques_uuid": review["ques_uuid"],
-                        "ques_type": ques_type,
+                        "ques_type": review["ques_type"],
                         "review_uuid": review["review_uuid"],
                         "contents": question_content,
                         "review_line": review["review_line"],
-                        "review_date": review_date
+                        "review_date": review_date,
+                        "order": question_order
                     }
                 )
             if (ques_and_ans["answer"]):
-                ques_and_ans = sorted(
-                    ques_and_ans, key=lambda x: x["ques_type"])
+                ques_and_ans = sorted(ques_and_ans, lambda x: x["order"])
                 review_all.append(ques_and_ans)
 
     return JsonResponse(review_all, safe=False, status=status.HTTP_200_OK)
@@ -414,7 +415,7 @@ def registerOverallQues(request):
     data = JSONParser().parse(request)["ques"]
     if (len(data) > 0):
         if (Questionlist.objects.filter(market_reg_num=data[0]["market_reg_num"]).exists()):
-            return JsonResponse("already register overall questions", safe=False, status=status.HTTP_403_FORBIDDEN)
+            return JsonResponse({"MESSAGE": "already register overall questions"}, safe=False, status=status.HTTP_403_FORBIDDEN)
     for i in range(len(data)):
         if (data[i]["ques_type"] == 2):
             data[i]["fast_response"] = list(
