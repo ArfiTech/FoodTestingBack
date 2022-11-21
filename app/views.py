@@ -381,7 +381,7 @@ def registerOverallQues(request):
     data = JSONParser().parse(request)["ques"]
     if (len(data) > 0):
         if (Questionlist.objects.filter(market_reg_num=data[0]["market_reg_num"]).exists()):
-            return JsonResponse("already register overall questions", safe=False, status=status.HTTP_403_FORBIDDEN)
+            return JsonResponse({"MESSAGE" : "already register overall questions"}, safe=False, status=status.HTTP_403_FORBIDDEN)
     for i in range(len(data)):
         if (data[i]["ques_type"] == 2):
             data[i]["fast_response"] = list(
@@ -401,6 +401,7 @@ def registerOverallQues(request):
             else:
                 return JsonResponse({"MESSAGE": "Failed to register custom question"}, safe=False, status=status.HTTP_406_NOT_ACCEPTABLE)
         selected_ques = {
+            "uuid": str(uuid.uuid4()),
             "market_reg_num": data[i]["market_reg_num"],
             "ques_uuid": data[i]["ques_uuid"],
             "order": i
