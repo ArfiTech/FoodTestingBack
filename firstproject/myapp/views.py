@@ -294,6 +294,7 @@ def getReviewQuestions(request, reg_num):
     for ques in ques_list:
         query_set = list(Questionlist.objects.filter(
             ques_uuid=ques['ques_uuid']).values())[0]
+        print(query_set)
         query_set["fast_response"] = query_set["fast_response"].split(",")
         query_set["order"] = ques["order"]
         questions.append(json.dumps(query_set))
@@ -348,14 +349,14 @@ def getDefaultQuestions(request, type):
 @ csrf_exempt
 def postReviews(request):
     # 사용자가 작성한 리뷰 post
-    requestedData = JSONParser().parse(request)
+    requestedData = JSONParser().parse(request)["reviews"]
     for data in requestedData:
-        review_uuid = data["uuid"]
+        review_uuid = data["review_uuid"]
         writer_uuid = data["writer_uuid"]
-        market_reg_num = data["RestaurantRegNumber"]
-        ques_uuid = data["query_uuid"]
-        review_date = data["post_date"]
-        review_line = data["contents"]
+        market_reg_num = data["market_reg_num"]
+        ques_uuid = data["ques_uuid"]
+        review_date = data["review_date"]
+        review_line = data["review_line"]
 
         review = {
             'review_uuid': review_uuid,
@@ -366,7 +367,7 @@ def postReviews(request):
             'review_date': review_date
         }
 
-        serializer = ReviewSerializer(data=json.dumps(review))
+        serializer = ReviewSerializer(data=review)
         if (serializer.is_valid()):
             serializer.save()
         else:
@@ -407,7 +408,7 @@ def getReviewAnswers(request, reg_num):
                 ques_and_ans = sorted(ques_and_ans, lambda x: x["order"])
                 review_all.append(ques_and_ans)
 
-    return JsonResponse(review_all, safe=False, status=status.HTTP_200_OK)
+    return JsonResponse(review_all, json_dumps_params={'ensure_ascii': False}, safe=False, status=status.HTTP_200_OK)
 
 
 @ csrf_exempt
