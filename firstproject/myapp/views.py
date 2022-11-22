@@ -419,35 +419,37 @@ def registerOverallQues(request):
         if (Questionlist.objects.filter(market_reg_num=data[0]["market_reg_num"]).exists()):
             Questionlist.objects.filter(
                 market_reg_num=data[0]["market_reg_num"]).delete()
-    for i in range(len(data)):
-        if (data[i]["ques_type"] == 2):
-            data[i]["fast_response"] = list(
-                map(lambda x: x.strip(), data[i]["fast_response"]))
-            data[i]["fast_response"] = ",".join(data[i]["fast_response"])
-            question = {
-                "ques_uuid": data[i]["ques_uuid"],
+        for i in range(len(data)):
+            if (data[i]["ques_type"] == 2):
+                data[i]["fast_response"] = list(
+                    map(lambda x: x.strip(), data[i]["fast_response"]))
+                data[i]["fast_response"] = ",".join(data[i]["fast_response"])
+                question = {
+                    "ques_uuid": data[i]["ques_uuid"],
+                    "market_reg_num": data[i]["market_reg_num"],
+                    "contents": data[i]["contents"],
+                    "fast_response": data[i]["fast_response"],
+                    "ques_type": data[i]["ques_type"],
+                }
+                serializer = QuestionlistSerializer(data=question)
+                print(repr(serializer))
+                if (serializer.is_valid()):
+                    serializer.save()
+                else:
+                    return JsonResponse({"MESSAGE": "Failed to register custom question"}, safe=False, status=status.HTTP_406_NOT_ACCEPTABLE)
+            selected_ques = {
+                "uuid": str(uuid.uuid4()),
                 "market_reg_num": data[i]["market_reg_num"],
-                "contents": data[i]["contents"],
-                "fast_response": data[i]["fast_response"],
-                "ques_type": data[i]["ques_type"],
+                "ques_uuid": data[i]["ques_uuid"],
+                "order": i
             }
-            serializer = QuestionlistSerializer(data=question)
-            print(repr(serializer))
-            if (serializer.is_valid()):
-                serializer.save()
+            selected_serializer = QuesbymarketSerializer(data=selected_ques)
+            if (selected_serializer.is_valid()):
+                selected_serializer.save()
             else:
-                return JsonResponse({"MESSAGE": "Failed to register custom question"}, safe=False, status=status.HTTP_406_NOT_ACCEPTABLE)
-        selected_ques = {
-            "market_reg_num": data[i]["market_reg_num"],
-            "ques_uuid": data[i]["ques_uuid"],
-            "order": i
-        }
-        selected_serializer = QuesbymarketSerializer(data=selected_ques)
-        if (selected_serializer.is_valid()):
-            selected_serializer.save()
-        else:
-            return JsonResponse({"MESSAGE": "Failed to register selected question"}, safe=False, status=status.HTTP_406_NOT_ACCEPTABLE)
-    return JsonResponse({"MESSAGE": "Success to register all selected questions"}, safe=False, status=status.HTTP_200_OK)
+                return JsonResponse({"MESSAGE": "Failed to register selected question"}, safe=False, status=status.HTTP_406_NOT_ACCEPTABLE)
+        return JsonResponse({"MESSAGE": "Success to register all selected questions"}, safe=False, status=status.HTTP_200_OK)
+    return JsonResponse({"MESSAGE": "No data"}, safe=False, status=status.HTTP_400_BAD_REQUEST)
 
 
 # 매장, 음식 같이 나오게 - 1
