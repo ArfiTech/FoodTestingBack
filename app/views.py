@@ -220,14 +220,20 @@ def getReviewQuestions(request, reg_num):
     # 사장님이 선택한 질문 보내기
     ques_list = list(Quesbymarket.objects.filter(
         market_reg_num=reg_num).values('ques_uuid', 'order'))
+    ques_list = sorted(ques_list, key=lambda x: x["order"])
     questions = []
     for ques in ques_list:
-        query_set = Questionlist.objects.filter(
-            ques_uuid=ques['ques_uuid']).first()
-        query_set["fast_response"] = query_set["fast_response"].split(",")
+        query_set = list(Questionlist.objects.filter(
+            ques_uuid=ques['ques_uuid']).values())[0]
+        query_set["market_reg_num"] = query_set.pop('market_reg_num_id')
+        if(query_set["fast_response"]):
+            query_set["fast_response"] = query_set["fast_response"].split(",")
         query_set["order"] = ques["order"]
-        questions.append(json.dumps(query_set))
-    return JsonResponse({"ques": questions}, safe=False, status=status.HTTP_200_OK)
+        questions.append(query_set)
+        #ques_json = json.dumps(query_set, indent=8, ensure_ascii=False)
+        #questions.append(ques_json)
+    #ques_json = json.dumps(questions, indent=8, ensure_ascii=False)
+    return JsonResponse({"ques": questions}, json_dumps_params={'ensure_ascii': False}, safe=False, status=status.HTTP_200_OK)
 
 
 #@api_view(['POST'])
@@ -239,6 +245,7 @@ def registerQuestions(request):
         return JsonResponse("already register questions", safe=False, status=status.HTTP_403_FORBIDDEN)
     for data in requestedData:
         question = {
+            "uuid": data["uuid"],
             "market_reg_num": data["market_reg_num"],
             "ques_uuid": data["ques_uuid"],
             "order": data["order"]
