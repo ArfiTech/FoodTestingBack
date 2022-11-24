@@ -219,7 +219,7 @@ def register_marketInfo(request):
     serializer = MarketSerializer(data=table_data)
     if (serializer.is_valid()):
         serializer.save()
-        return JsonResponse({"MESSAGE":"Success to register"}, safe=False, status=status.HTTP_200_OK)
+        return JsonResponse({"MESSAGE": "Success to register"}, safe=False, status=status.HTTP_200_OK)
     return JsonResponse({"MESSAGE": "Failed to register"}, safe=False, status=status.HTTP_400_BAD_REQUEST)
 
 
@@ -378,8 +378,7 @@ def postReviews(request):
 def getReviewAnswers(request, reg_num):
     # 사용자들이 작성한 리뷰 중 24시간 지난 리뷰만 return
     customers = list(Review.objects.filter(
-        market_reg_num=reg_num).values('writer_uuid'))
-    customers = list(set(customers))
+        market_reg_num=reg_num).values('writer_uuid').distinct())
     review_all = []
     for customer in customers:
         review_by_customer = Review.objects.filter(
@@ -393,7 +392,7 @@ def getReviewAnswers(request, reg_num):
                 question_order = Quesbymarket.objects.get(
                     market_reg_num=reg_num, ques_uuid=review["ques_uuid"]).order
                 review_date = review["review_date"]
-                if ((int(time.time())-review_date)/60*60*24 > 24):
+                if ((int(time.time())-review_date)/60 > 5):
                     ques_and_ans["answer"].append(
                         {
                             "ques_uuid": review["ques_uuid"],
@@ -452,34 +451,33 @@ def registerOverallQues(request):
 
 
 # 리뷰 작성한 고객의 수, 성별, 나이대, 방문한 달
-def getReviewResearch(request,regnum):
-    customer=list(Review.objects.filter(market_reg_num=regnum).values('writer_uuid','review_date'))
-    customer_list=list(set(customer))
-    result={
-        "total":len(customer),
-        "gender":{0:0,1:0,2:0},
-        "age":{10:0,20:0,30:0,40:0,50:0},
-        "per_month":{1:0,2:0,3:0,4:0,5:0,6:0,7:0,8:0,9:0,10:0,11:0,12:0}
+def getReviewResearch(request, regnum):
+    customer_list = list(Review.objects.filter(market_reg_num=regnum).values(
+        'writer_uuid', 'review_date').distinct())
+    result = {
+        "total": len(customer),
+        "gender": {0: 0, 1: 0, 2: 0},
+        "age": {10: 0, 20: 0, 30: 0, 40: 0, 50: 0},
+        "per_month": {1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0, 7: 0, 8: 0, 9: 0, 10: 0, 11: 0, 12: 0}
     }
     for customer in customer_list:
-        gender=Customer.objects.get(uuid=customer['writer_uuid']).gender
-        born_date=Customer.objects.get(uuid=customer['writer_uuid']).born_date
-        review_date=customer['review_date']
-        result["gender"][gender]+=1
-        age=time.localtime(time.time()).tm_year-time.localtime(born_date).tm_year+1
-        if (age<20):
-            result["gender"][10]+=1
-        elif (age<30):
-            result["gender"][20]+=1
-        elif (age<40):
-            result["gender"][30]+=1
-        elif (age<50):
-            result["gender"][40]+=1
+        gender = Customer.objects.get(uuid=customer['writer_uuid']).gender
+        born_date = Customer.objects.get(
+            uuid=customer['writer_uuid']).born_date
+        review_date = customer['review_date']
+        result["gender"][gender] += 1
+        age = time.localtime(time.time()).tm_year - \
+            time.localtime(born_date).tm_year+1
+        if (age < 20):
+            result["gender"][10] += 1
+        elif (age < 30):
+            result["gender"][20] += 1
+        elif (age < 40):
+            result["gender"][30] += 1
+        elif (age < 50):
+            result["gender"][40] += 1
         else:
-            result["gender"][50]+=1
-        month=time.localtime(review_date).tm_mon
-        result["per_month"][month]+=1
-    return JsonResponse({"review_result":result},safe=False,status=status.HTTP_200_OK)
-        
-        
-        
+            result["gender"][50] += 1
+        month = time.localtime(review_date).tm_mon
+        result["per_month"][month] += 1
+    return JsonResponse({"review_result": result}, safe=False, status=status.HTTP_200_OK)
