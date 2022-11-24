@@ -219,7 +219,7 @@ def register_marketInfo(request):
     serializer = MarketSerializer(data=table_data)
     if (serializer.is_valid()):
         serializer.save()
-        return JsonResponse(serializer.data, safe=False, status=status.HTTP_200_OK)
+        return JsonResponse({"MESSAGE":"Success to register"}, safe=False, status=status.HTTP_200_OK)
     return JsonResponse({"MESSAGE": "Failed to register"}, safe=False, status=status.HTTP_400_BAD_REQUEST)
 
 
@@ -408,7 +408,6 @@ def getReviewAnswers(request, reg_num):
             if (ques_and_ans["answer"]):
                 ques_and_ans = sorted(ques_and_ans, lambda x: x["order"])
                 review_all.append(ques_and_ans)
-
     return JsonResponse({"review_all": review_all}, json_dumps_params={'ensure_ascii': False}, safe=False, status=status.HTTP_200_OK)
 
 
@@ -416,8 +415,8 @@ def getReviewAnswers(request, reg_num):
 def registerOverallQues(request):
     data = JSONParser().parse(request)["ques"]
     if (len(data) > 0):
-        if (Questionlist.objects.filter(market_reg_num=data[0]["market_reg_num"]).exists()):
-            Questionlist.objects.filter(
+        if (Quesbymarket.objects.filter(market_reg_num=data[0]["market_reg_num"]).exists()):
+            Quesbymarket.objects.filter(
                 market_reg_num=data[0]["market_reg_num"]).delete()
         for i in range(len(data)):
             if (data[i]["ques_type"] == 2):
@@ -452,11 +451,35 @@ def registerOverallQues(request):
     return JsonResponse({"MESSAGE": "No data"}, safe=False, status=status.HTTP_400_BAD_REQUEST)
 
 
-# 매장, 음식 같이 나오게 - 1
-
-# review
-# default 질문지 response : default 질문 목록 -Questionlist
-# get/ get reviews by regNum: 매장별 리뷰 확인(reviewDate 이후 24시간 경과 리뷰만)
-# post/ register question - Questionlist
-# post/ fhinish choosing question - Quesbymarket
-# post/ post review - Review
+# 리뷰 작성한 고객의 수, 성별, 나이대, 방문한 달
+def getReviewResearch(request,regnum):
+    customer=list(Review.objects.filter(market_reg_num=regnum).values('writer_uuid','review_date'))
+    customer_list=list(set(customer))
+    result={
+        "total":len(customer),
+        "gender":{0:0,1:0,2:0},
+        "age":{10:0,20:0,30:0,40:0,50:0},
+        "per_month":{1:0,2:0,3:0,4:0,5:0,6:0,7:0,8:0,9:0,10:0,11:0,12:0}
+    }
+    for customer in customer_list:
+        gender=Customer.objects.get(uuid=customer['writer_uuid']).gender
+        born_date=Customer.objects.get(uuid=customer['writer_uuid']).born_date
+        review_date=customer['review_date']
+        result["gender"][gender]+=1
+        age=time.localtime(time.time()).tm_year-time.localtime(born_date).tm_year+1
+        if (age<20):
+            result["gender"][10]+=1
+        elif (age<30):
+            result["gender"][20]+=1
+        elif (age<40):
+            result["gender"][30]+=1
+        elif (age<50):
+            result["gender"][40]+=1
+        else:
+            result["gender"][50]+=1
+        month=time.localtime(review_date).tm_mon
+        result["per_month"][month]+=1
+    return JsonResponse({"review_result":result},safe=False,status=status.HTTP_200_OK)
+        
+        
+        
