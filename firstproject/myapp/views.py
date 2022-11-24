@@ -455,7 +455,7 @@ def getReviewResearch(request, regnum):
     customer_list = list(Review.objects.filter(market_reg_num=regnum).values(
         'writer_uuid', 'review_date').distinct())
     result = {
-        "total": len(customer),
+        "total": len(customer_list),
         "gender": {0: 0, 1: 0, 2: 0},
         "age": {10: 0, 20: 0, 30: 0, 40: 0, 50: 0},
         "per_month": {1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0, 7: 0, 8: 0, 9: 0, 10: 0, 11: 0, 12: 0}
