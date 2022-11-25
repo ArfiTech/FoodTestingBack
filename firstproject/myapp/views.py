@@ -230,8 +230,8 @@ def modify_marketInfo(request):
     serializer = MarketSerializer(table, data=table_data)
     if (serializer.is_valid()):
         serializer.save()
-        return JsonResponse(serializer.data, safe=False)
-    return JsonResponse({"MESSAGE": "Failed to Update"}, safe=False)
+        return JsonResponse({"MESSAGE": "Success to modify"}, safe=False, status=status.HTTP_200_OK)
+    return JsonResponse({"MESSAGE": "Failed to Update"}, safe=False, status=status.HTTP_400_BAD_REQUEST)
 
 
 @csrf_exempt
@@ -481,3 +481,11 @@ def getReviewResearch(request, regnum):
         month = time.localtime(review_date).tm_mon
         result["per_month"][month] += 1
     return JsonResponse({"review_result": result}, safe=False, status=status.HTTP_200_OK)
+
+
+def getNewAndExistMarket(request):
+    result = {"new": [], "exist": []}
+    markets = Market.objects.all()
+    now = int(time.localtime(time.time()))
+    for market in markets:
+        if (now-market["start_date"])
