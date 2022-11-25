@@ -37,4 +37,7 @@ urlpatterns = [
     #path('storeinfo/by-registartion-num/<str:regnum>', views.get_storeinfo),
     path('post/overall-selected-questions', views.registerOverallQues),
     path('get/review-research/<str:regnum>', views.getReviewResearch),
+    re_path(r'^get/main/new-market/(?P<lat>\d+\.\d+)&(?P<lng>\d+\.\d+)$',
+            views.getNewMarket),
+    path('get/main/new-menu', views.getNewMenu)
 ]

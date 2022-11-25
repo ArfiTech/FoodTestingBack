@@ -483,9 +483,19 @@ def getReviewResearch(request, regnum):
     return JsonResponse({"review_result": result}, safe=False, status=status.HTTP_200_OK)
 
 
-def getNewAndExistMarket(request):
-    result = {"new": [], "exist": []}
-    markets = Market.objects.all()
-    now = int(time.localtime(time.time()))
+def getNewMarket(request,lat,lng):
+    markets=sorted(get_locations_nearby_coords(lat, lng, 'all', max_distance=60),key=lambda market:market["start_date"],reverse=True)
+    if (len(markets)>15):
+        markets=markets[:15]
     for market in markets:
-        if (now-market["start_date"])
+        market["market_photo"] = "https://foodtesting-img.s3.ap-northeast-2.amazonaws.com/img/"+market['market_photo']
+        del market["distance"]
+    JsonResponse({"markets":markets},safe=False,status=status.HTTP_200_OK)
+
+def getNewMenu(request):
+    menus=list(Post.objects.all().order_by('-post_date'))
+    if (len(menus)>15):
+        menus=menus[:15]
+    for menu in menus:
+        menu["menu_photo"]="https://foodtesting-img.s3.ap-northeast-2.amazonaws.com/img/"+menu['market_photo']
+    JsonResponse({"menus":menus},safe=False,status=status.HTTP_200_OK)
