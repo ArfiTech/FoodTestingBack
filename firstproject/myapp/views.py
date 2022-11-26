@@ -504,7 +504,7 @@ def getNewMarket(request, lat, lng):
         market["market_photo"] = "https://foodtesting-img.s3.ap-northeast-2.amazonaws.com/img/" + \
             market['market_photo']
         del market["distance"]
-    JsonResponse({"markets": markets}, safe=False, status=status.HTTP_200_OK)
+    return JsonResponse({"markets": markets}, safe=False, status=status.HTTP_200_OK)
 
 
 def getNewMenu(request):
@@ -514,4 +514,4 @@ def getNewMenu(request):
     for menu in menus:
         menu["menu_photo"] = "https://foodtesting-img.s3.ap-northeast-2.amazonaws.com/img/" + \
             menu['market_photo']
-    JsonResponse({"menus": menus}, safe=False, status=status.HTTP_200_OK)
+    return JsonResponse({"menus": menus}, safe=False, status=status.HTTP_200_OK)
