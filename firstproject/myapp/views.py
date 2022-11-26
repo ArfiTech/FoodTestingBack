@@ -245,6 +245,18 @@ def post_menu(request):
 
 
 @csrf_exempt
+def modify_menu(request):
+    requestedData = JSONParser().parse(request)
+    originData = Post.objects.get(
+        write_market=requestedData["write_market"], post_uuid=requestedData['post_uuid'])
+    serializers = PostSerializer(originData, data=requestedData)
+    if (serializers.is_valid(raise_exception=True)):
+        serializers.save()
+        return JsonResponse({"MESSAGE": "Success to modify menu"}, safe=False, status=status.HTTP_200_OK)
+    return JsonResponse({"MESSAGE": "Failed to modify menu"}, safe=False, status=status.HTTP_400_BAD_REQUEST)
+
+
+@csrf_exempt
 def delete_menu(request, regnum, uuid):
     if (Post.objects.filter(write_market=regnum, post_uuid=uuid).exists()):
         deletedData = Post.objects.get(write_market=regnum, post_uuid=uuid)
@@ -483,19 +495,23 @@ def getReviewResearch(request, regnum):
     return JsonResponse({"review_result": result}, safe=False, status=status.HTTP_200_OK)
 
 
-def getNewMarket(request,lat,lng):
-    markets=sorted(get_locations_nearby_coords(lat, lng, 'all', max_distance=60),key=lambda market:market["start_date"],reverse=True)
-    if (len(markets)>15):
-        markets=markets[:15]
+def getNewMarket(request, lat, lng):
+    markets = sorted(get_locations_nearby_coords(
+        lat, lng, 'all', max_distance=60), key=lambda market: market["start_date"], reverse=True)
+    if (len(markets) > 15):
+        markets = markets[:15]
     for market in markets:
-        market["market_photo"] = "https://foodtesting-img.s3.ap-northeast-2.amazonaws.com/img/"+market['market_photo']
+        market["market_photo"] = "https://foodtesting-img.s3.ap-northeast-2.amazonaws.com/img/" + \
+            market['market_photo']
         del market["distance"]
-    JsonResponse({"markets":markets},safe=False,status=status.HTTP_200_OK)
+    JsonResponse({"markets": markets}, safe=False, status=status.HTTP_200_OK)
+
 
 def getNewMenu(request):
-    menus=list(Post.objects.all().order_by('-post_date'))
-    if (len(menus)>15):
-        menus=menus[:15]
+    menus = list(Post.objects.all().order_by('-post_date'))
+    if (len(menus) > 15):
+        menus = menus[:15]
     for menu in menus:
-        menu["menu_photo"]="https://foodtesting-img.s3.ap-northeast-2.amazonaws.com/img/"+menu['market_photo']
-    JsonResponse({"menus":menus},safe=False,status=status.HTTP_200_OK)
+        menu["menu_photo"] = "https://foodtesting-img.s3.ap-northeast-2.amazonaws.com/img/" + \
+            menu['market_photo']
+    JsonResponse({"menus": menus}, safe=False, status=status.HTTP_200_OK)
