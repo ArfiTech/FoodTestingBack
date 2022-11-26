@@ -508,10 +508,10 @@ def getNewMarket(request, lat, lng):
 
 
 def getNewMenu(request):
-    menus = list(Post.objects.all().order_by('-post_date'))
+    menus = list(Post.objects.all().order_by('-post_date').values())
     if (len(menus) > 15):
         menus = menus[:15]
     for menu in menus:
         menu["menu_photo"] = "https://foodtesting-img.s3.ap-northeast-2.amazonaws.com/img/" + \
-            menu['market_photo']
+            menu['menu_photo']
     return JsonResponse({"menus": menus}, safe=False, status=status.HTTP_200_OK)
