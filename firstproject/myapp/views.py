@@ -289,6 +289,21 @@ def get_locations_nearby_coords(latitude, longtitude, category, max_distance=Non
             .annotate(distance=distance_raw_sql)\
             .order_by('distance')
     else:
+        # 전체(all),한식(kf), 일식(jf), 중식(cf), 양식(wf), 디저트(de), 분식(sf), 기타(el)
+        if (category == 'kf'):
+            category = '한식'
+        elif (category == 'jf'):
+            category = '일식'
+        elif (category == 'cf'):
+            category = '중식'
+        elif (category == 'wf'):
+            category = '양식'
+        elif (category == 'de'):
+            category = '디저트'
+        elif (category == 'sf'):
+            category = '분식'
+        else:
+            category = '기타'
         qs = Market.objects.filter(category=category) \
             .annotate(distance=distance_raw_sql)\
             .order_by('distance')
@@ -503,8 +518,9 @@ def getNewMarket(request, lat, lng):
     for market in markets:
         market["market_photo"] = "https://foodtesting-img.s3.ap-northeast-2.amazonaws.com/img/" + \
             market['market_photo']
+        market['customer_uuid'] = market.pop('customer_uuid_id')
         del market["distance"]
-    return JsonResponse({"markets": markets}, safe=False, status=status.HTTP_200_OK)
+    return JsonResponse({"markets": markets}, json_dumps_params={'ensure_ascii': False}, safe=False, status=status.HTTP_200_OK)
 
 
 def getNewMenu(request):
@@ -514,4 +530,40 @@ def getNewMenu(request):
     for menu in menus:
         menu["menu_photo"] = "https://foodtesting-img.s3.ap-northeast-2.amazonaws.com/img/" + \
             menu['menu_photo']
-    return JsonResponse({"menus": menus}, safe=False, status=status.HTTP_200_OK)
+        menu['write_market'] = menu.pop('write_market_id')
+        menu['writer_uuid'] = menu.pop('writer_uuid_id')
+    return JsonResponse({"menus": menus}, json_dumps_params={'ensure_ascii': False}, safe=False, status=status.HTTP_200_OK)
+
+
+def getCustomReview(request, uuid):
+    review_all = []
+    visited_market = list(Review.objects.filter(
+        writer_uuid=uuid).values('market_reg_num').distinct())
+    for market in visited_market:
+        review_by_customer = list(Review.objects.filter(
+            market_reg_num=market, writer_uuid=uuid).values())
+        market_info = Market.objects.get(reg_num=market)
+        ques_and_ans = {"customer": uuid,
+                        "market_info": market_info, "answer": []}
+        for review in review_by_customer:
+            if (Quesbymarket.objects.filter(ques_uuid=review["ques_uuid"]).exists()):
+                question_content = Questionlist.objects.get(
+                    ques_uuid=review["ques_uuid"]).contents
+                question_order = Quesbymarket.objects.get(
+                    market_reg_num=market, ques_uuid=review["ques_uuid"]).order
+                review_date = review["review_date"]
+                ques_and_ans["answer"].append(
+                    {
+                        "ques_uuid": review["ques_uuid"],
+                        "ques_type": review["ques_type"],
+                        "review_uuid": review["review_uuid"],
+                        "contents": question_content,
+                        "review_line": review["review_line"],
+                        "review_date": review_date,
+                        "order": question_order
+                    }
+                )
+            if (ques_and_ans["answer"]):
+                ques_and_ans = sorted(ques_and_ans, lambda x: x["order"])
+                review_all.append(ques_and_ans)
+    return JsonResponse({"review_all": review_all}, json_dumps_params={'ensure_ascii': False}, safe=False, status=status.HTTP_200_OK)

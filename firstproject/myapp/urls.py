@@ -40,5 +40,6 @@ urlpatterns = [
     path('get/review-research/<str:regnum>', views.getReviewResearch),
     re_path(r'^get/main/new-market/(?P<lat>\d+\.\d+)&(?P<lng>\d+\.\d+)$',
             views.getNewMarket),
-    path('get/main/new-menu', views.getNewMenu)
+    path('get/main/new-menu', views.getNewMenu),
+    path('get/review/each/customer/<str:uuid>',views.getCustomReview),
 ]
