@@ -271,6 +271,8 @@ def get_marketInfo_orderBy_distance(request, lat, lng, category):
     for d in data:
         d["market_photo"] = "https://foodtesting-img.s3.ap-northeast-2.amazonaws.com/img/"+d['market_photo']
         del d["distance"]
+    if (len(data) > 30):
+        data = data[:30]
     return JsonResponse(data, safe=False)
 
 
@@ -377,6 +379,10 @@ def getDefaultQuestions(request, type):
 def postReviews(request):
     # 사용자가 작성한 리뷰 post
     requestedData = JSONParser().parse(request)["reviews"]
+    to_deleted = Review.objects.filter(
+        market_reg_num=requestedData[0]["market_reg_num"], writer_uuid=requestedData[0]["writer_uuid"])
+    if (to_deleted.exists()):
+        to_deleted.delete()
     for data in requestedData:
         review_uuid = data["review_uuid"]
         writer_uuid = data["writer_uuid"]
@@ -409,31 +415,29 @@ def getReviewAnswers(request, reg_num):
     review_all = []
     for customer in customers:
         review_by_customer = Review.objects.filter(
-            market_reg_num=reg_num, writer_uuid=customer).values()
-        ques_and_ans = {"customer": customer,
+            market_reg_num=reg_num, writer_uuid=customer["writer_uuid"]).values()
+        customer_data = Customer.objects.get(uuid=customer["writer_uuid"])
+        customerInfo = {"email": customer_data.email, "gender": customer_data.gender, "nickname": customer_data.nickname, "age": str(int((time.localtime(time.time()).tm_year -
+                        time.localtime(customer_data.born_date).tm_year+1)/10))+"0대"
+                        }
+        ques_and_ans = {"customer": customerInfo,
                         "market_reg_num": reg_num, "answer": []}
         for review in review_by_customer:
-            if (Quesbymarket.objects.filter(ques_uuid=review["ques_uuid"]).exists()):
+            if (Quesbymarket.objects.filter(ques_uuid=review["ques_uuid_id"]).exists()):
                 question_content = Questionlist.objects.get(
-                    ques_uuid=review["ques_uuid"]).contents
-                question_order = Quesbymarket.objects.get(
-                    market_reg_num=reg_num, ques_uuid=review["ques_uuid"]).order
+                    ques_uuid=review["ques_uuid_id"]).contents
                 review_date = review["review_date"]
-                if ((int(time.time())-review_date)/60 > 5):
-                    ques_and_ans["answer"].append(
-                        {
-                            "ques_uuid": review["ques_uuid"],
-                            "ques_type": review["ques_type"],
-                            "review_uuid": review["review_uuid"],
-                            "contents": question_content,
-                            "review_line": review["review_line"],
-                            "review_date": review_date,
-                            "order": question_order
-                        }
-                    )
-            if (ques_and_ans["answer"]):
-                ques_and_ans = sorted(ques_and_ans, lambda x: x["order"])
-                review_all.append(ques_and_ans)
+                ques_and_ans["answer"].append(
+                    {
+                        "contents": question_content,
+                        "review_line": review["review_line"],
+                        "review_date": review_date,
+                    }
+                )
+        if (ques_and_ans["answer"]):
+            ques_and_ans["answer"] = sorted(
+                ques_and_ans["answer"], key=lambda x: x["review_date"])
+            review_all.append(ques_and_ans)
     return JsonResponse({"review_all": review_all}, json_dumps_params={'ensure_ascii': False}, safe=False, status=status.HTTP_200_OK)
 
 
@@ -536,34 +540,38 @@ def getNewMenu(request):
 
 
 def getCustomReview(request, uuid):
-    review_all = []
+    review_all = list()
     visited_market = list(Review.objects.filter(
         writer_uuid=uuid).values('market_reg_num').distinct())
-    for market in visited_market:
+    for i in range(len(visited_market)):
         review_by_customer = list(Review.objects.filter(
-            market_reg_num=market, writer_uuid=uuid).values())
-        market_info = Market.objects.get(reg_num=market)
+            market_reg_num=visited_market[i]["market_reg_num"], writer_uuid=uuid).values())
+        market_info = list(Market.objects.filter(
+            reg_num=visited_market[i]["market_reg_num"]).values())[0]
+        market_info["market_photo"] = "https://foodtesting-img.s3.ap-northeast-2.amazonaws.com/img/" + \
+            market_info['market_photo']
+        market_info["customer_uuid"] = market_info.pop('customer_uuid_id')
         ques_and_ans = {"customer": uuid,
                         "market_info": market_info, "answer": []}
         for review in review_by_customer:
-            if (Quesbymarket.objects.filter(ques_uuid=review["ques_uuid"]).exists()):
+            if (Quesbymarket.objects.filter(ques_uuid=review["ques_uuid_id"]).exists()):
                 question_content = Questionlist.objects.get(
-                    ques_uuid=review["ques_uuid"]).contents
-                question_order = Quesbymarket.objects.get(
-                    market_reg_num=market, ques_uuid=review["ques_uuid"]).order
+                    ques_uuid=review["ques_uuid_id"]).contents
+                # question_order = Quesbymarket.objects.get(
+                # market_reg_num=market["market_reg_num"], ques_uuid=review["ques_uuid"]).order
                 review_date = review["review_date"]
                 ques_and_ans["answer"].append(
                     {
-                        "ques_uuid": review["ques_uuid"],
-                        "ques_type": review["ques_type"],
+                        "ques_uuid": review["ques_uuid_id"],
                         "review_uuid": review["review_uuid"],
                         "contents": question_content,
                         "review_line": review["review_line"],
                         "review_date": review_date,
-                        "order": question_order
+                        # "order": question_order
                     }
                 )
-            if (ques_and_ans["answer"]):
-                ques_and_ans = sorted(ques_and_ans, lambda x: x["order"])
-                review_all.append(ques_and_ans)
+        if (ques_and_ans["answer"]):
+            ques_and_ans["answer"] = sorted(
+                ques_and_ans["answer"], key=lambda x: x["review_date"])
+            review_all.append(ques_and_ans)
     return JsonResponse({"review_all": review_all}, json_dumps_params={'ensure_ascii': False}, safe=False, status=status.HTTP_200_OK)
