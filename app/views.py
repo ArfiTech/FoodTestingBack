@@ -118,7 +118,7 @@ def getMarketInfoWithPost(request, regnum):
                 post['writer_uuid'] = post.pop('writer_uuid_id')
         return JsonResponse([{"market": marketInfo[0], "post": postInfo}], safe=False, status=status.HTTP_200_OK)
     else:
-        JsonResponse({"MESSAGE": "Not exists store"}, safe=False,
+        return JsonResponse({"MESSAGE": "Not exists store"}, safe=False,
                      status=status.HTTP_400_BAD_REQUEST)
 
 
@@ -262,6 +262,8 @@ def getReviewQuestions(request, reg_num):
         query_set["market_reg_num"] = query_set.pop('market_reg_num_id')
         if(query_set["fast_response"]):
             query_set["fast_response"] = query_set["fast_response"].split(",")
+        else:
+            query_set["fast_response"] = []
         query_set["order"] = ques["order"]
         questions.append(query_set)
         #ques_json = json.dumps(query_set, indent=8, ensure_ascii=False)
@@ -414,10 +416,11 @@ def postImg(request) :
 
         for file in files :
             file._set_name(str(uuid.uuid4()))
-            s3r.Bucket('foodtesting-img').put_object( Key='img'+'/%s'%(file), Body=file, ContentType='jpg')
+            s3r.Bucket('foodtesting-img').put_object( Key='img'+'/%s'%(file), Body=file)
         return JsonResponse({"MESSAGE" : "%s"%(file)}, status=200)
 
-    except Exception as e :
+    #except Exception as e :
+    except e:
         return JsonResponse({"MESSAGE" : "FAIL"})
 
 #@api_view(['POST'])
